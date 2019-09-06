@@ -31,9 +31,9 @@
 \usepackage[T1]{fontenc}
 \usepackage[pdftex, final]{graphicx}
 \usepackage[pdftex,
-            pdftitle={C++ Technical Specification --- Extensions for Networking},
-            pdfsubject={C++ Technical Specification --- Extensions for Networking},
-            pdfcreator={Jonathan Wakely},
+            pdftitle={C++ Technical Specification --- Extensions for Numerics},
+            pdfsubject={C++ Technical Specification --- Extensions for Numerics},
+            pdfcreator={Alexander Zaitsev},
             bookmarks=true,
             bookmarksnumbered=true,
             pdfpagelabels=true,
@@ -57,12 +57,12 @@
 \makeindex[impldefindex]
 
 %%--------------------------------------------------
-%% macros specific to the Networking TS
+%% macros specific to the Numerics TS
 \newcommand{\completionsig}{\Fundesc{Completion signature}}
 \newcommand{\DEDUCED}{\placeholdernc{\texttt{DEDUCED}}}
 \newcommand{\nativeref}{see~\ref{socket.reqmts.native}}
 % The base standard:
-\newcommand{\CppStd}{\CppXIV}
+\newcommand{\CppStd}{\CppXVII}
 \newcommand{\CppXref}[1]{\CppStd [#1]}
 % Alternative formatting of cross-references, resolving stable name to number.
 % \input{cxx}
@@ -112,6 +112,10 @@
 \mainmatter
 \setglobalstyles
 
+\include{intro}
+\include{references}
+\include{featuretest}
+\include{wideinteger}
 
 %%--------------------------------------------------
 %% appendices
