@@ -4,6 +4,15 @@
 
 
 \indexlibrary{\idxhdr{wide_integer}}%
+\rSec1[numeric.limits]{Class template \tcode{numeric_limits}}
+[Note to editor: Add the following sentence after the sentence "Specializations shall be provided for each arithmetic type, both floating-point and integer, including bool." (first sentence in fourth paragraph in [numeric.limits]) - end note]
+
+Specializations shall be also provided for \tcode{wide_integer} type.
+
+\begin{note}
+If there is a built-in integral type \tcode{Integral} that has the same signedness and width as \tcode{wide_integer<Bits, S>}, then \tcode{numeric_limits<wide_integer<Bits, S>>} specialized in the same way as \tcode{numeric_limits<Integral>}
+\end{note}
+
 \rSec1[numeric.wide_integer.syn]{Header \tcode{<wide_integer>} synopsis}
 
 \begin{codeblock}
