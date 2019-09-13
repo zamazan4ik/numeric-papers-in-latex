@@ -1,0 +1,1363 @@
+%!TEX root = ts.tex
+
+\rSec0[unbounded_types]{Unbounded Types}
+
+
+\indexlibrary{\idxhdr{Bits}}%
+\rSec1[numeric.bits.syn]{Bits}
+
+\begin{codeblock}
+namespace std {
+  
+  // 26.??.?? binary operations
+  bits operator&(const bits& lhs, const bits& rhs);
+  bits operator|(const bits& lhs, const bits& rhs);
+  bits operator^(const bits& lhs, const bits& rhs);
+  
+  // 26.??.?? iostream specializations
+  template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os,
+                                             const bits& val);
+  
+  template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator>>(basic_ostream<CharT, Traits>& os,
+                                             bits& val);
+
+} // namespace std
+\end{codeblock}
+       
+\begin{codeblock}
+namespace std {
+  class bits {
+  public:
+  
+    class reference;
+    
+    // constructors
+    bits() noexcept;
+    
+    template <class Ty>
+      bits(Ty rhs) noexcept;    // integral types only
+      
+    bits(initializer_list<uint_least32_t> list);
+    
+    template <class CharT, class Traits, class Alloc>
+      explicit bits(const basic_string<CharT, Traits, Alloc>& str,
+                    typename basic_string<CharT, Traits, Alloc>::size_t pos = 0,
+                    typename basic_string<CharT, Traits, Alloc>::size_t count = std::basic_string<CharT>::npos,
+                    CharT zero = CharT('0'),
+                    CharT one = CharT('1'));
+
+	template <class CharT>
+  	  explicit bits(const CharT *ptr,
+	                typename basic_string<CharT>::size_t count = std::basic_string<CharT>::npos,
+	                CharT zero = CharT('0'),
+                 	CharT one = CharT('1'));
+
+	explicit bits(const integer& val);
+	explicit bits(integer&& val);
+	
+	bits(const bits& rhs);
+	bits(bits&& rhs) noexcept;
+
+    // assign and swap
+    template <class Ty>
+      bits& operator=(Ty rhs); // integral types only
+    bits& operator=(const integer& rhs);
+    bits& operator=(integer&& rhs);
+    bits& operator=(const bits& rhs);
+    bits& operator=(bits&& rhs);
+    void swap(bits& rhs) noexcept;
+    
+    // conversions
+    unsigned long to_ulong() const;
+    unsigned long long to_ullong() const;
+    template <class CharT = char, class Traits = char_traits<CharT>, class Alloc = allocator<CharT>>
+      basic_string<CharT, Traits, Alloc> to_string(CharT zero = CharT('0'), CharT one = CharT('1')) const;
+      
+    // logical operations
+    bits& operator&=(const bits& rhs);
+    bits& operator|=(const bits& rhs);
+    bits& operator^=(const bits& rhs);
+    bits operator~() const;
+    
+    bits& operator<<=(size_t rhs);
+    bits& operator>>=(size_t rhs);
+    bits& operator<<(size_t rhs) const;
+    bits& operator>>(size_t rhs) const;
+    
+    // element access and modification
+    bits& set() noexcept;
+    bits& set(size_t pos, bool val = true);
+    bits& reset() noexcept;
+    bits& reset(size_t pos);
+    bits& flip() noexcept;
+    bits& flip(size_t pos);
+    bool operator[](size_t pos) const;
+    reference operator[](size_t pos);
+    bool test(size_t pos) const noexcept;
+    bool all() const noexcept;
+    bool any() const noexcept;
+    bool none() const noexcept;
+    size_t count() const noexcept;
+    size_t count_not_set() const noexcept;
+    
+    // comparison
+    bool operator==(const bits& rhs) const noexcept;
+    bool operator!=(const bits& rhs) const noexcept;
+    
+    // capacity
+    size_t size() const noexcept;
+    size_t capacity() const noexcept;
+    void reserve(size_t bit_count);
+    void shrink_to_fit();  
+  };
+} // namespace std
+\end{codeblock}
+
+The class describes an object that represents an unbounded set of bits.
+
+\rSec2[numeric.bits.cons]{Constructors}
+
+\begin{itemdecl}
+bits() noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Constructs an object whose value is 0.
+\end{itemdescr}
+
+\begin{itemdecl}
+template <class Ty>
+  bits(Ty rhs) noexcept;    // integral types only
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Constructs an object whose value is the ones-complement representation of \tcode{rhs}. Shall not take part in overload resolution unless the type \tcode{Ty} is an integral type.
+\end{itemdescr}
+
+\begin{itemdecl}
+bits(initializer_list<uint_least32_t> list);
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Constructs an object whose stored value is equal to the elements of the \tcode{initializer_list} treated as a series of unsigned 32-bit digits with the leftmost digit being most significant. For example, the \tcode{initializer_list { 0xFE, 0xF0, 0xAA, 0x31 }} represents the value \tcode{0xFE * 323 + 0xF0 * 322 + 0xAA * 321 + 0x31 * 320}.
+\end{itemdescr}
+
+\begin{itemdecl}
+template <class CharT, class Traits, class Alloc>
+  explicit bits::bits(const basic_string<CharT, Traits, Alloc>& str,
+                      typename basic_string<CharT, Traits, Alloc>::size_t pos = 0,
+                      typename basic_string<CharT, Traits, Alloc>::size_t count = basic_string<CharT>::npos,
+                      CharT zero = CharT('0'),
+                      CharT one = CharT('1'));
+template <class CharT>
+  explicit bits::bits(const CharT *ptr,
+                      typename basic_string<CharT>::size_t count = basic_string<CharT>::npos,
+                      CharT zero = CharT('0'),
+                      CharT one = CharT('1'));                      
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Construct an object whose value is the value represented by their argument, treating zero as 0 and one as 1.
+\end{itemdescr}
+
+\begin{itemdecl}
+explicit bits(const integer& rhs);
+explicit bits(integer&& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Construct objects whose value is the ones-complement representation of \tcode{rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bits(const bits& rhs);
+bits(bits&& rhs) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Construct objects with the same value as \tcode{rhs}. The move constructor leaves \tcode{rhs} in an unspecified valid state.
+\end{itemdescr}
+
+\rSec2[numeric.bits.ops]{Operations}
+
+\begin{itemdecl}
+size_t capacity() const noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The number of bits that the object can represent without reallocating its internal storage.
+\end{itemdescr}
+
+\begin{itemdecl}
+size_t count() const noexcept;    
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The number of bits in \tcode{*this} that are set, or \tcode{static_cast<size_t>(-1)} if the number of bits that are set is too large to fit in an object of type \tcode{size_t}.
+\end{itemdescr}
+
+\begin{itemdecl}
+size_t count_not_set() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The number of bits in \tcode{*this} that are not set, or \tcode{static_cast<size_t>(-1)} if the number of bits that are not set is too large to fit in an object of type \tcode{size_t}.
+\end{itemdescr}
+
+\begin{itemdecl}
+void flip() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Toggles all the bits in the stored value. 
+\end{itemdescr}
+
+\begin{itemdecl}
+void flip(size_t pos);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Toggles the bit at position \tcode{pos} in the stored value.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool none() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns True only if none of the bits in \tcode{*this} is set.
+\end{itemdescr}
+
+\begin{itemdecl}
+void reserve(size_t bit_count);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Ensures that \tcode{capacity() >= bit_count}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& reset() noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Clears all the bits of \tcode{*this}.
+
+\returns \tcode{*this}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& reset(size_t pos);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Clears the bit as position \tcode{pos}.
+
+\returns \tcode{*this}. 	
+\end{itemdescr}
+
+\begin{itemdecl}
+void set() noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets all the bits of \tcode{*this}.
+
+\returns {*this}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+void set(size_t pos, bool val = true);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the bit at position \tcode{pos} in the stored value to \tcode{val}.
+
+\returns \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+void shrink_to_fit();	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Is a non-binding request to reduce \tcode{capacity()} to hold the current stored value without wasted space.
+\end{itemdescr}
+
+\begin{itemdecl}
+size_t size() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{capacity()}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool test(size_t pos) const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns True only if the bit at position \tcode{pos} in the stored value is non-zero.
+\end{itemdescr}
+
+\rSec2[numeric.bits.conv]{Bits conversion}
+
+\begin{itemdecl}
+template <class CharT = char, class Traits = char_traits<CharT>, class Alloc = allocator<CharT>>
+  basic_string<CharT, Traits, Alloc> to_string(CharT zero = CharT('0'),
+                                               CharT one = CharT('1'));	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A string representation of the bits in the value stored in \tcode{*this}, using zero to represent 0 and one to represent 1.	
+\end{itemdescr}
+
+\begin{itemdecl}
+unsigned long long to_ullong() const;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A value equal to the stored value of \tcode{*this}. It throws an exception of type \tcode{range_error} if the value cannot be represented as an \tcode{unsigned long long}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+unsigned long to_ulong() const;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A value equal to the stored value of \tcode{*this}. It throws an exception of type \tcode{range_error} if the value cannot be represented as a \tcode{long long}.	
+\end{itemdescr}
+
+\rSec2[numeric.bits.operators]{Bits operators}
+
+\begin{itemdecl}
+template <class Ty>
+  bits& operator=(Ty rhs);   // integral types only		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Shall not take part in overload resolution unless the type \tcode{Ty} is an arithmetic type. The operator effectively executes \tcode{*this = integer(rhs)}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& operator=(const bits& rhs);
+bits& operator=(bits&& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Store the value of \tcode{rhs} into \tcode{*this}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& operator=(const integer& rhs);
+bits& operator=(integer&& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Store the ones-complement representation of \tcode{rhs} into \tcode{*this}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator==(const bits& rhs) const noexcept;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{True} only if the stored value in \tcode{*this} is the same as the stored value in \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator!=(const bits& rhs) const noexcept;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{!(*this == rhs)}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits operator&(const bits& lhs, const bits& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the bitwise AND of the values of \tcode{lhs} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& operator&=(const bits& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the value of \tcode{*this} to the bitwise AND of the values of \tcode{*this} and \tcode{rhs}.
+
+\returns A reference to \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits operator|(const bits& lhs, const bits& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the bitwise inclusive OR of the values of \tcode{lhs} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& operator|=(const bits& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the value of \tcode{*this} to the bitwise inclusive OR of the values of \tcode{*this} and \tcode{rhs}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits operator^(const bits& lhs, const bits& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the bitwise exclusive OR of the values of \tcode{lhs} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& operator^=(const bits& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the value of \tcode{*this} to the bitwise exclusive OR of the values of \tcode{*this} and \tcode{rhs}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits operator~() const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object that holds the complement of the set of bits held by \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits operator>>(const bits& lhs, size_t rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose stored value is the value of the bits in \tcode{lhs} shifted right \tcode{rhs} positions.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& operator>>=(size_t rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value in \tcode{*this} to the value of the bits in \tcode{*this} shifted right \tcode{rhs} positions.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+template <class CharT, class Traits>
+  basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is,
+                                           bits& val);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Has the effect of \tcode{{ std::string temp; is >> temp; val = temp; }}.
+
+\returns \tcode{is}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits operator<<(const bits& lhs, size_t rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose stored value is the value of the bits in \tcode{lhs} shifted left \tcode{rhs} positions.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bits& operator<<=(size_t rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value in \tcode{*this} to the value of the bits in \tcode{*this} shifted left \tcode{rhs} positions.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+template <class CharT, class Traits>
+  basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os,
+                                           const bits& val);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Has the effect of \tcode{os << val.to_string()}.
+
+\returns \tcode{os}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator[](size_t pos) const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The value of the bit at position \tcode{pos}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+reference operator[](size_t pos);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object of type \tcode{bits::reference} that refers to the bit at position \tcode{pos}.		
+\end{itemdescr}
+
+\rSec2[numeric.bits.reference]{bits::reference class}
+
+\begin{codeblock}
+namespace std {
+  class bits {
+    class reference {	
+    public:
+      reference& operator=(bool val) noexcept;
+      reference& operator=(const reference& rhs) noexcept;
+      bool operator~() const noexcept;
+      operator bool() const noexcept;
+      reference& flip() noexcept;
+    };  
+  };
+} // namespace std
+\end{codeblock}
+
+The nested class \tcode{bits::reference} describes an object that can be used to manage a particular bit in an object of type \tcode{bits}.
+
+\begin{itemdecl}
+reference& flip() noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Toggles the bit that the object manages.	
+\end{itemdescr}
+
+\begin{itemdecl}
+reference& operator=(bool rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the bit that the object manages to the value of \tcode{rhs}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+reference& operator=(const reference& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the bit that the object manages to the value managed by \tcode{rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator~() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns True if the bit managed by the object is set, otherwise false.	
+\end{itemdescr}
+
+\begin{itemdecl}
+operator bool() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns True if the bit that the object manages is set.	
+\end{itemdescr}
+
+\rSec1[numeric.integer.syn]{Integer}
+
+\begin{codeblock}
+namespace std {
+  class integer {
+  public:
+    // constructors
+    integer() noexcept;
+    
+    template <class Ty>
+      integer(Ty rhs) noexcept; // arithmetic types only
+    
+    integer(initializer_list<uint_least32_t> init);
+    
+    template <class CharT, class Traits, class Alloc>
+      explicit integer(const basic_string<CharT, Traits, Alloc>& str);
+    
+    explicit integer(const bits& rhs);
+    explicit integer(bits&& rhs);
+    
+    integer(const integer& rhs);
+    integer(integer&& rhs) noexcept;
+    
+    // assign and swap
+    template <class Ty>
+      integer& operator=(Ty rhs);   // arithmetic types only
+    integer& operator=(const bits& rhs);
+    integer& operator=(bits&& rhs);
+    integer& operator=(const integer& rhs);
+    integer& operator=(integer&& rhs);
+    void swap(integer& rhs) noexcept;
+    
+    // conversions
+    explicit operator long long() const;
+    explicit operator unsigned long long() const;
+    explicit operator long double() const noexcept;
+    explicit operator bool() const noexcept;
+    
+    // comparisons
+    int compare(const integer& rhs) const noexcept;
+    
+    // arithmetic operations
+    integer& operator+=(const integer& rhs);
+    integer& operator-=(const integer& rhs);
+    integer& operator*=(const integer& rhs);
+    integer& operator/=(const integer& rhs);
+    integer& operator%=(const integer& rhs);
+    
+    integer& operator++();
+    integer operator++(int);
+    integer& operator--();
+    integer operator--(int);
+    
+    integer div(const integer& rhs);
+    
+    integer& abs() noexcept;
+    integer& negate() noexcept;
+    integer operator+() const noexcept;
+    integer operator-() const noexcept;
+    
+    integer& operator<<=(size_t rhs);
+    integer& operator>>=(size_t rhs);
+    
+    // numeric operations
+    integer& sqr();
+    integer& sqrt();
+    integer& pow(const integer& exp);
+    integer& mod(const integer& rhs);
+    integer& mulmod(const integer& rhs, const integer& m);
+    integer& powmod(const integer& exp, const integer& m);
+    
+    // observers
+    bool is_zero() const noexcept;
+    bool is_odd() const noexcept;
+    
+    // accessors
+    integer_data_proxy get_data_proxy();
+    
+    // capacity
+    size_t size() const noexcept;
+    size_t capacity() const noexcept;
+    void reserve(size_t digits);
+    void shrink_to_fit();
+  };
+} // namespace std
+
+void swap(integer& lhs, integer& rhs) noexcept;
+
+// comparisons
+bool operator==(const integer& lhs, const integer& rhs) noexcept;
+bool operator!=(const integer& lhs, const integer& rhs) noexcept;
+bool operator<(const integer& lhs, const integer& rhs) noexcept;
+bool operator<=(const integer& lhs, const integer& rhs) noexcept;
+bool operator>(const integer& lhs, const integer& rhs) noexcept;
+bool operator>=(const integer& lhs, const integer& rhs) noexcept;
+
+// arithmetic operations
+integer operator+(const integer& lhs, const integer& rhs);
+integer operator-(const integer& lhs, const integer& rhs);
+integer operator*(const integer& lhs, const integer& rhs);
+integer operator/(const integer& lhs, const integer& rhs);
+integer operator%(const integer& lhs, const integer& rhs);
+
+pair<integer, integer> div(const integer& lhs, const integer& rhs);
+
+integer abs(const integer& val);
+
+integer operator<<(const integer& lhs, size_t rhs);
+integer operator>>(const integer& lhs, size_t rhs);
+
+// numeric operations
+integer sqr(const integer& val);
+integer sqrt(const integer& val);
+integer pow(const integer& val, const integer& exp);
+integer mod(const integer& lhs, const integer& rhs);
+integer mulmod(const integer& lhs, const integer& rhs, const integer& m);
+integer powmod(const integer& lhs, const integer& rhs, const integer& m);
+
+integer gcd(const integer& a, const integer& b);
+integer lcm(const integer& a, const integer& b);
+
+// conversions
+string to_string(const integer& val, int radix = 10);
+
+// I/O operations
+template <class CharT, class Traits>
+  basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& str,
+                                           const integer& val);
+template <class CharT, class Traits>
+  basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& str,
+                                           integer& val);
+\end{codeblock}
+
+The class describes an object that manages an unbounded-precision signed integral type that can be used in most contexts where an int could be used.
+
+Any function specified to return an object of type \tcode{integer} may return an object of another type, provided all the const member functions of the class \tcode{integer} are also applicable to that type.
+
+\begin{itemdecl}
+integer abs(const integer& other);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object that holds the absolute value of \tcode{other}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& abs() noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value of *this to its absolute value and returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+size_t capacity() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The number of decimal digits that the object can represent without reallocating its internal storage.		
+\end{itemdescr}
+
+\begin{itemdecl}
+int compare(const integer& rhs) const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A value less than 0 if \tcode{*this} is less than \tcode{rhs}, 0 if \tcode{*this} is equal to \tcode{rhs}, and greater than 0 if \tcode{*this} is greater than \tcode{rhs}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+pair<integer, integer> div(const integer& lhs, const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object that is an instantiation of \tcode{pair}; its first field holds the quotient, \tcode{lhs / rhs}, and its second field holds the remainder, \tcode{lhs \% rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer div(const integer& rhs) const;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The remainder, \tcode{*this \% rhs}, and stores the quotient, \tcode{*this / rhs}, into \tcode{*this}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+integer gcd(const integer& a, const integer& b);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the greatest common denominator of \tcode{a} and \tcode{b}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer_data_proxy get_data_proxy();	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object of type \tcode{integer_data_proxy} that can be used to examine and modify the internal storage of \tcode{*this}. If an object of type \tcode{integer_data_proxy} that refers to \tcode{*this} exists at the time of a call to this function, the function throws an exception object of type \tcode{std::runtime_error}.		
+\end{itemdescr}
+
+\rSec2[numeric.integer.ctors]{Constructors}
+
+\begin{itemdecl}
+integer() noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Constructs an object whose value is 0.		
+\end{itemdescr}
+
+\begin{itemdecl}
+template <class Ty>
+  integer(Ty val) noexcept; // arithmetic types only	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects For integral types the constructor constructs an object whose value is \tcode{val}. For floating-point types the constructor constructs an object whose value is the value of \tcode{val} with any fractional part discarded. Shall not take part in overload resolution unless the type \tcode{Ty} is an arithmetic type. 		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer(initializer_list<unspecified> list);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Constructs an object whose stored value is equal to the elements of the \tcode{initializer_list} treated as a series of unsigned 32-bit digits with the leftmost digit being most significant. For example, the \tcode{initializer list { 0xFE, 0xF0, 0xAA, 0x31 }} represents the value \tcode{0xFE * 323 + 0xF0 * 322 + 0xAA * 321 + 0x31 * 320}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+template<class CharT, class Traits, class Alloc>
+  explicit integer(const basic_string<CharT, Traits, Alloc>& str);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Constructs an object whose value is the value represented by the \tcode{string} object. The \tcode{string} object shall have the form required for the \tcode{string} argument to the function \tcode{strtol} with a radix of base, and shall be interpreted as if by \tcode{strtol(str.c_str(), 0, base)}, except that the resulting value can never be outside the range of representable values.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer(const bits& rhs);
+integer(bits&& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Construct an object whose stored value is the value in the bit pattern in \tcode{rhs} interpreted as a ones-complement representation of an integer value.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer(const integer& rhs);
+integer(integer&& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Construct objects with the same value as \tcode{rhs}. The move constructor leaves \tcode{rhs} in an unspecified valid state.		
+\end{itemdescr}
+
+\rSec2[numeric.integer.ops]{Operations}
+
+\begin{itemdecl}
+bool is_odd() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns True only if the stored value represents an odd number.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool is_zero() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns True only if the stored value is zero.
+\end{itemdescr}
+
+\begin{itemdecl}
+integer lcm(const integer& a, const integer& b);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the least common multiple of \tcode{a} and \tcode{b}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer mod(const integer& lhs, const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is \tcode{lhs mod rhs}.   		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& mod(const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value in \tcode{*this} to \tcode{*this mod rhs}.
+	
+\returns \tcode{*this}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+integer mulmod(const integer& lhs, const integer& rhs, const integer& m);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is \tcode{(lhs * rhs) mod m}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& mulmod(const integer& rhs, const integer& m);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the value of \tcode{*this} to \tcode{(*this * rhs) mod m}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& negate() noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value of \tcode{*this} to the negation of its previous value.
+
+\returns \tcode{this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer pow(const integer& val, const integer& exp);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\requires \tcode{0 <= exp}.	
+	
+\returns An object whose value is \tcode{$val^{exp}$}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& pow(const integer& exp);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\requires \tcode{0 <= exp}.	
+	
+\effects Sets the value of \tcode{*this} to \tcode{$*this^{exp}$}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer powmod(const integer& val, const integer& exp, const integer& m);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\requires \tcode{0 <= exp} and \tcode{m != 0}.	
+	
+\returns An object whose value is \tcode{$val^{exp}$ mod m}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& powmod(const integer& exp, const integer& m);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\requires \tcode{0 <= exp} and \tcode{m != 0}.	
+		
+\effects Sets the value of \tcode{*this} to \tcode{$*this^{exp}$ mod m}.
+
+\returns \tcode{*this}. 	
+\end{itemdescr}
+
+\begin{itemdecl}
+void reserve(size_t digits);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Ensures that \tcode{capacity() >= digits}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+void shrink_to_fit();	
+\end{itemdecl}
+
+\begin{itemdescr}	
+\effects A non-binding request to reduce \tcode{capacity()} to hold the current stored value without wasted space.	
+\end{itemdescr}
+
+\begin{itemdecl}
+size_t size() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{capacity()}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer sqr(const integer& val);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is \tcode{val * val}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& sqr();	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the value of \tcode{*this} to \tcode{*this * *this}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer sqrt(const integer& val);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\requires \tcode{0 <= val}.	
+	
+\returns An object whose value is the square root of the value held by \tcode{val}, discarding any fractional part. 		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& sqrt();	
+\end{itemdecl}
+
+\begin{itemdescr}
+\requires \tcode{0 <= *this}.
+
+\effects Sets the value of \tcode{*this} to the square root of the value held by \tcode{*this}, discarding any fractional part.
+
+\returns \tcode{*this}. 		
+\end{itemdescr}
+
+\begin{itemdecl}
+void swap(integer& lhs, integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Swaps the stored values of \tcode{lhs} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+void swap(integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Swaps the stored values of \tcode{*this} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+string to_string(const integer& val, int radix = 10) const;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A \tcode{string} representation of the value stored in \tcode{val}, using \tcode{radix} as the radix.		
+\end{itemdescr}
+
+\rSec2[numeric.integer.conv]{Conversion}
+
+\begin{itemdecl}
+explicit operator bool() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{False} only if \tcode{*this} is equal to 0.		
+\end{itemdescr}
+
+\begin{itemdecl}
+explicit operator long double() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A value equal to the stored value of  \tcode{*this}. If the stored value is outside the range that can be represented by an object of type  \tcode{long double} the returned value is positive or negative infinity, as appropriate.		
+\end{itemdescr}
+
+\begin{itemdecl}
+explicit operator long long() const;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A value equal to the stored value of \tcode{*this}. If the stored value cannot be represented as a \tcode{long long} it throws an exception of type \tcode{range_error}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+explicit operator unsigned long long() const;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A value equal to the stored value of \tcode{*this}. If the stored value cannot be represented as an \tcode{unsigned long long} it throws an exception of type \tcode{range_error}.		
+\end{itemdescr}
+
+\rSec2[numeric.integer.comp]{Comparison}
+
+\begin{itemdecl}
+bool operator==(const integer& lhs, const integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{True} only if the value stored in \tcode{lhs} is equal to the value stored in \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator!=(const integer& lhs, const integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{!(lhs == rhs)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>(const integer& lhs, const integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{rhs < lhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>=(const integer& lhs, const integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{!(lhs < rhs)}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<(const integer& lhs, const integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{True} only if \tcode{lhs.compare(rhs)} returns -1.		
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<=(const integer& lhs, const integer& rhs) noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{!(rhs < lhs)}.		
+\end{itemdescr}
+
+\rSec2[numeric.integer.assign]{Assignment}
+
+\begin{itemdecl}
+template <class Ty>
+  integer& operator=(Ty rhs);   // arithmetic types only	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Shall not take part in overload resolution unless the type \tcode{Ty} is an arithmetic type. The operator effectively executes \tcode{*this = integer(rhs)}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator=(const integer& rhs);
+integer& operator=(integer&& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Store the value of \tcode{rhs} into \tcode{*this}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator=(const bits& rhs);
+integer& operator=(bits&& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Store the value of \tcode{rhs}, interpreted as a ones-complement representation of an integer value, into \tcode{*this}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\rSec2[numeric.integer.arithmetic_ops]{Arithmetic operations}
+
+\begin{itemdecl}
+integer operator+(const integer& lhs, const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the sum of the values of \tcode{lhs} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator+() const noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A copy of \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator+=(const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value of \tcode{*this} to the sum of the values of \tcode{*this} and \tcode{rhs}.
+
+\returns A reference to \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator++();	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Set the value stored in \tcode{*this} to \tcode{*this + 1}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator++(int);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the value stored in \tcode{*this} prior to the increment.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator-(const integer& lhs, const integer& rhs)	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the difference between the values of \tcode{lhs} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator-() noexcept;	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the negation of the value of \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator-=(const integer&);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value of \tcode{*this} to the difference between the values of \tcode{*this} and \tcode{rhs}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator--();	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Set the value stored in \tcode{*this} to \tcode{*this - 1}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator--(int);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Set the value stored in \tcode{*this} to \tcode{*this - 1}.
+
+\returns An object whose value is the value stored in \tcode{*this} prior to the decrement.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator*(const integer& lhs, const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the product of the values of \tcode{lhs} and \tcode{rhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator*=(const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value of \tcode{*this} to the product of the values of \tcode{*this} and \tcode{rhs}.
+
+\returns A reference to \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator/(const integer& lhs, const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the quotient of the value of \tcode{lhs} divided by the value of \tcode{rhs}, discarding any fractional part.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator/=(const integer& rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value of \tcode{*this} to the quotient of the value of \tcode{*this} divided by the value of \tcode{rhs}, discarding any fractional part.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator%(const integer&, const integer&);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is the remainder of the value of \tcode{lhs} divided by the value of \tcode{rhs}. The remainder is the value such that \tcode{(lhs / rhs) * rhs + lhs \% rhs} is equal to \tcode{lhs}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& integer::operator%=(const integer&);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the stored value of \tcode{*this} to the remainder of \tcode{*this} divided by the value of \tcode{rhs}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator>>(const integer& val, size_t rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is \tcode{val / $2^{rhs}$}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator>>=(size_t rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the value of \tcode{*this} to \tcode{*this / $2^{rhs}$}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\rSec2[numeric.integer.io]{I/O}
+
+\begin{itemdecl}
+template <class Elem, class Traits>
+  basic_istream<Elem, Traits>& operator>>(basic_istream<Elem, Traits>& is, integer& val);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Has the effect of \tcode{{ std::string temp; is >> temp; val = integer(temp); }}.
+
+\returns \tcode{is}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer operator<<(const integer& val, size_t rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An object whose value is \tcode{val * $2^{rhs}$}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& integer::operator<<=(size_t rhs);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Sets the value of \tcode{*this} to \tcode{*this * $2^{rhs}$}.
+
+\returns \tcode{*this}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+template <class Elem, class Traits>
+  basic_ostream<Elem, Traits>& operator<<(basic_ostream<Elem, Traits>& os, const integer& val);	
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Has the effect of \tcode{os << to_string(val)}.
+
+\returns \tcode{os}.		
+\end{itemdescr}
