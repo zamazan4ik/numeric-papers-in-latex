@@ -2,6 +2,248 @@
 
 \rSec0[unbounded_types]{Unbounded Types}
 
+\rSec1[numeric.integer_data_proxy.syn]{Class \tcode{integer_data_proxy}}
+
+\begin{codeblock}
+namespace std {
+  class integer_data_proxy {
+  	
+  	// type names
+  	typedef unspecified data_type;
+  	typedef unspecified arithmetic_type;
+  	typedef unspecified uarithmetic_type;
+  	typedef unspecified iterator;
+  	typedef unspecified const_iterator;
+  	typedef unspecified reverse_iterator;
+  	typedef unspecified const_reverse_iterator;
+  	
+  	// constructors
+  	integer_data_proxy(const integer_data_proxy& rhs) = delete;
+  	integer_data_proxy(integer_data_proxy&& rhs);
+  	
+  	// assign
+  	integer_data_proxy& operator=(const integer_data_proxy& rhs) = delete;
+  	integer_data_proxy& operator=(integer_data_proxy&& rhs) = delete;
+  	
+  	// iterators
+  	iterator begin() noexcept;
+  	iterator end() noexcept;
+  	reverse_iterator rbegin() noexcept;
+  	reverse_iterator rend() noexcept;
+  	const_iterator cbegin() const noexcept;
+  	const_iterator cend() const noexcept;
+  	const_reverse_iterator crbegin() const noexcept;
+  	const_reverse_iterator crend() const noexcept;
+  	
+  	// element access
+  	data_type operator[](size_t pos) const;
+  	data_type& operator[](size_t pos);
+  	
+  	// capacity
+  	size_t size() const noexcept;
+  	size_t capacity() const noexcept;
+  	void reserve(size_t digits);
+  	void shrink_to_fit();
+  }; 
+} // namespace std
+\end{codeblock}
+
+The class describes an object that can be used to examine and modify the internal representation of an object of type \tcode{integer}. This allows advanced users to portably implement algorithms that are not provided natively.
+
+There can be only one \tcode{integer_data_proxy} object associated with a particular \tcode{integer} object at any given time; that object is obtained by calling the \tcode{get_data_proxy} member function on the \tcode{integer} object. The resulting object can be moved but not copied.
+
+\begin{itemdecl}
+typedef unspecified arithmetic_type;	
+\end{itemdecl}
+
+\begin{itemdescr}
+The typedef defines a synonym for a signed arithmetic type that is large enough to hold the product of the largest values that the implementation will store in an object of type data_type.	
+\end{itemdescr}
+
+\begin{itemdecl}
+iterator begin();		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An iterator object such that the iterators \tcode{[begin(), end())} point to the internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+size_t capacity() const noexcept;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The number of decimal digits that the \tcode{integer} object can represent without reallocating its internal storage.		
+\end{itemdescr}
+
+\begin{itemdecl}
+const_iterator cbegin() const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An iterator object such that the iterator range \tcode{[cbegin(), cend())} points to the internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+const_iterator cend() const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An iterator object such that the iterator range \tcode{[cbegin(), cend())} points to the internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+typedef unspecified const_iterator;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The typedef defines a synonym for an iterator that can be used to access but not modify internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+typedef unspecified const_reverse_iterator;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The typedef defines a synonym for a reverse iterator that can be used to access but not modify internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+const_reverse_iterator crbegin() const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The member function returns a reverse iterator object such that the iterator range \tcode{[crbegin(), crend())} points to the internal data elements of the \tcode{integer} object in reverse order.		
+\end{itemdescr}
+
+\begin{itemdecl}
+const_reverse_iterator crend() const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A reverse iterator object such that the iterator range \tcode{[crbegin(), crend())} points to the internal data elements of the \tcode{integer} object in reverse order.		
+\end{itemdescr}
+
+\begin{itemdecl}
+typedef unspecified data_type;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The typedef defines a synonym for the type of the \tcode{integer} object's internal data elements.		
+\end{itemdescr}
+
+\begin{itemdecl}
+iterator end();		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns An iterator object such that the iterator range \tcode{[begin(), end())} points to the internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer_data_proxy(const integer_data_proxy&) = delete;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The copy constructor is deleted.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer_data_proxy(integer_data_proxy&& rhs);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Copies the contents of \tcode{rhs} and leaves \tcode{rhs} in an unspecified valid state.		
+\end{itemdescr}
+
+\begin{itemdecl}
+typedef unspecified iterator;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The typedef defines a synonym for an iterator that can be used to access internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+integer& operator=(const integer_data_proxy&) = delete;
+integer& operator=(integer_data_proxy&&) = delete;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The copy assignment and move assignment operators are deleted.		
+\end{itemdescr}
+
+\begin{itemdecl}
+data_type operator[](size_t pos) const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns The value of the internal data element at index \tcode{pos}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+data_type& operator[](size_t pos);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A reference to the internal data element at index \tcode{pos}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+reverse_iterator rbegin();		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A reverse iterator object such that the iterator range \tcode{[crbegin(), crend())} points to the internal data elements of the \tcode{integer} object in reverse order.		
+\end{itemdescr}
+
+\begin{itemdecl}
+reverse_iterator rend();		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns A reverse iterator object such that the iterator range \tcode{[crbegin(), crend())} points to the internal data elements of the \tcode{integer} object in reverse order.		
+\end{itemdescr}
+
+\begin{itemdecl}
+void reserve(size_t digits);		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Ensures that \tcode{capacity() >= digits}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+typedef unspecified reverse_iterator;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The typedef defines a synonym for a reverse iterator that can be used to access internal data elements of the \tcode{integer} object.		
+\end{itemdescr}
+
+\begin{itemdecl}
+void shrink_to_fit();		
+\end{itemdecl}
+
+\begin{itemdescr}
+\effect Is a non-binding request to reduce \tcode{capacity()} to hold the \tcode{integer} object's current stored value without wasted space.		
+\end{itemdescr}
+
+\begin{itemdecl}
+size_t size() const;		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{capacity()}.		
+\end{itemdescr}
+
+\begin{itemdecl}
+typedef unspecified uarithmetic_type;		
+\end{itemdecl}
+
+\begin{itemdescr}
+The typedef defines a synonym for an unsigned arithmetic type that is large enough to hold the product of the largest values that the implementation will store in an object of type data_type.		
+\end{itemdescr}
 
 \indexlibrary{\idxhdr{Bits}}%
 \rSec1[numeric.bits.syn]{Bits}
