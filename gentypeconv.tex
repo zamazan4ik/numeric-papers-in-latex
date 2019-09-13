@@ -1,0 +1,17 @@
+%!TEX root = ts.tex
+
+\rSec0[generalized_type_conversion]{Generalized Type Conversion}
+
+Conversion between arbitrary numeric types requires something more practical than implementing the full cross product of conversion possibilities.
+
+To that end, we propose that each numeric type promotes to an unbound type in it same general category. For example, integers of fixed size would promote to an unbound integer. In this promotion, there can be no possibility of overflow or rounding. Each type also demotes from that type. The demotion may have both round and overflow.
+
+The general template conversion algorithm from type \tcode{S} to type \tcode{T} is to:
+
+\begin{itemize}
+\item Promote \tcode{S} to its unbound type \tcode{S'}.
+\item Convert \tcode{S'} to unbound type \tcode{T'} of \tcode{T}.
+\item Demote \tcode{T'} to \tcode{T}.
+\end{itemize}
+
+We expect common conversions to have specialized implementations.
