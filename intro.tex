@@ -1,7 +1,91 @@
 %!TEX root = ts.tex
 
-\rSec0[scope]{Scope}
+\rSec0[foundations]{Foundations}
 
-\pnum
- This document describes extensions to the \Cpp Standard Library. This document specifies requirements for implementations of an interface that computer programs written in the \Cpp programming language may use to perform operations related to numbers, such as work with unbounded numbers. This document is applicable to information technology systems that can perform operations with big numbers. This document is applicable only to vendors who wish to provide the interface it describes.
+\rSec1[mission]{Mission}
 
+The mission of this specification is to make numbers easier to use.
+
+\rSec1[scope]{Scope}
+
+This specification provides numbers and their options, but does not provide algorithms or special functions.
+
+\rSec1[design]{Design principles}
+
+Follow mathematical behavior where feasible.
+
+\begin{itemize}
+\item Make unbounded numbers very simple to use.
+\item Make unavoidable overflow and rounding predictable and controllable.
+\begin{itemize}
+\item Overflow on any operation is unmanageable.
+\item A rational number with fixed-size fields needs to round.
+\end{itemize}
+\item Avoid or hide aliasing effects.
+\item Prefer compile-time errors to run-time errors.
+\item Prefer safe defaults to effient defaults.
+\end{itemize}
+
+Provide types that match the taxonomic needs.
+
+\begin{itemize}
+\item E.g. fixed-point, extended floating-point.
+\item Support construction of new types by library authors.
+\begin{itemize}
+\item Expose common implementation abstractions.
+\end{itemize}	
+\end{itemize}
+
+Strive for efficiency.
+
+\begin{itemize}
+\item Use efficient function parameter passing.
+\item Use efficient representations.
+\item Give speed priority to dynamically common operations.
+\item Provide composite operations when efficient.
+\begin{itemize}
+\item E.g. shift and add, multiply and add.
+\end{itemize}
+\item Identify opportunities for new hardware.
+\begin{itemize}
+\item E.g. rounding right shift.
+\end{itemize}
+\item Prefer run-time efficiency over compile-time efficiency.
+\end{itemize}
+
+Ease adoption and use.
+
+\begin{itemize}
+\item Provide a consistent vocabulary.
+\item Enable value conversion between all applicable types.
+\item Handle parameter aliasing within the implementations.
+\end{itemize}
+
+Ease extension.
+
+\begin{itemize}
+\item Provide a mechanism for conversion that does not require $n^{2}$ operations or coordination between independent developers.
+\item Most parts of the implementation should need only C++, so provide a machine abstraction layer.
+\item Expose sound "building-block" abstractions.
+\end{itemize}
+
+\rSec1[taxonomy]{Number type taxonomy}
+
+Types may be categorized by the representation constancy between argument and result.
+
+\textbf{same}
+The size of the type is the same between argument and result. Overflow is pervasive on all operations.
+\begin{itemize}
+\item invariant - All aspects of the representation are the same.
+\item invariant - Different fields within the representation may have different sizes.
+\end{itemize}
+\textbf{adaptive}
+The size of the result is statically known, but it may be different from (and generally larger than) the argument.
+\begin{itemize}
+\item limited - There is a maximum representation. If adaptation requires more than the maximum, the expression is ill-formed. Overflow in expressions is avoided until the maximum representation is reached.
+\item unlimited - There is no a priori maximum representation. Overflow in expressions is avoided.
+\end{itemize}
+\textbf{dynamic}
+All aspects of the representation are dynamic. Overflow is variables is avoided.
+
+Types may also be categorized by the size specification, which is generally by the number of bits in the representation or by the number of digits required.
