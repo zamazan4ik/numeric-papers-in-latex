@@ -1,0 +1,417 @@
+%!TEX root = ts.tex
+
+\rSec0[machine_layer]{Machine Abstraction Layer}
+
+The machine abstraction layer enables a mostly machine-independent implementation of this specification.
+
+\rSec1[overflow_detecting_ops]{Overflow-Detecting Operations}
+
+The overflow-detecting functions return a boolean true when the operation overflows, and a boolean false when the operation does not overflow. Compilers may assume that a true result is rare. When the return is false, the function writes the operation result through the given pointer. When the return is true, the pointer is not used and no write occurs.
+
+The following functions are available. Within these prototypes \tcode{T} and \tcode{C} are any integer type. However, \tcode{C} is useful only when it does not have values that \tcode{T} has.
+
+\begin{codeblock}
+bool overflow_cvt( C* result, T value );
+bool overflow_neg( T* result, T value );
+bool overflow_lsh( T* product, T multiplicand, int count );
+bool overflow_add( T* summand, T augend, T addend );
+bool overflow_sub( T* difference, T minuend, T subtrahend );
+bool overflow_mul( T* product, T multiplicand, T multiplier );
+\end{codeblock}
+
+\rSec1[overflow_handling_ops]{Overflow-Handling Operations}
+
+Overflow-handling operations require an overflow handling mode. We represent the mode in C++ as an enumeration:
+
+\begin{codeblock}
+enum class overflow {
+	impossible, undefined, abort, exception,
+	special,
+	saturate, modulo_shifted
+};
+\end{codeblock}
+
+Within the definition of the following functions, we use a defining function, which we do not expect will be directly represented in C++. It is \tcode{T overflow(mode,T lower,T upper,U value)} where \tcode{U} either
+\begin{itemize}
+\item has a range that is not a subset of the range of \tcode{T} or
+\item is evaluated as a real number expression.
+\end{itemize}
+
+Many C++ conversions already reduce the range of a value, but they do not provide programmer control of that reduction. We can give programmers control.
+
+\begin{itemdecl}
+template<typename T, typename U> T convert(overflow mode, U value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{overflow(mode, numeric_limits<T>::min, numeric_limits<T>::max, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T, typename U> T convert(U value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{convert(mode, value)}.	
+\end{itemdescr}
+
+Being able to specify overflow from a range of values of the same type is also helpful.
+
+\begin{itemdecl}
+template<typename T> T limit(overflow mode, T lower, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{overflow(mode, lower, upper, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T limit(T lower, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit(mode, lower, upper, value)}.	
+\end{itemdescr}
+
+Common arguments can be elided with convenience functions.
+
+\begin{itemdecl}
+template<typename T> T limit_nonnegative(overflow mode, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit(mode, 0, upper, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T limit_nonnegative(T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit_nonnegative(mode, upper, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename T> T limit_signed(overflow mode, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit(mode, -upper, upper, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T limit_signed(T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit_signed(mode, upper, value)}.	
+\end{itemdescr}
+
+Two's-complement numbers are a slight variant on the above.
+
+\begin{itemdecl}
+template<typename T> T limit_twoscomp(overflow mode, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit(mode, -upper-1, upper, value)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T limit_twoscomp(T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit_twoscomp(mode, upper, value)}.	
+\end{itemdescr}
+
+For binary representations, we can also specify bits instead. While this specification may seem redundant, it enables faster implementations.
+
+\begin{itemdecl}
+template<typename T> T limit_nonnegative_bits(overflow mode, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{overflow(mode, 0, $2^{upper}-1$, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T limit_nonnegative_bits(T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit_nonnegative_bits(mode, upper, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename T> T limit_signed_bits(overflow mode, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{overflow(mode, -($2^{upper}-1$), $2^{upper}-1$, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T limit_signed_bits(T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit_signed_bits(mode, upper, value)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename T> T limit_twoscomp_bits(overflow mode, T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{overflow(mode, $-2^{upper}$, $2^{upper}-1$, value)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T limit_twoscomp_bits(T upper, T value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{limit_twoscomp_bits(mode, upper, value)}.	
+\end{itemdescr}
+
+Embedding overflow detection within regular operations can lead to enhanced performance. In particular, left shift is a important candidate operation within fixed-point arithmetic.
+
+\begin{itemdecl}
+template<typename T> T scale_up(overflow mode, T value, int count)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{overflow(mode, numeric_limits<T>::min, numeric_limits<T>::max, value*$2^{count}$)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow mode, typename T> T scale_up(T value, int count)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{scale_up(mode, value, count)}.	
+\end{itemdescr}
+
+\rSec1[round_ops]{Rounding Operations}
+
+We represent the rounding mode in C++ as an enumeration:
+
+\begin{codeblock}
+enum class rounding {
+	all_to_neg_inf, all_to_pos_inf,
+	all_to_zero, all_away_zero,
+	all_to_even, all_to_odd,
+	all_fastest, all_smallest,
+	all_unspecified,
+	tie_to_neg_inf, tie_to_pos_inf,
+	tie_to_zero, tie_away_zero,
+	tie_to_even, tie_to_odd,
+	tie_fastest, tie_smallest,
+	tie_unspecified
+};
+\end{codeblock}
+
+The unmotivated modes \tcode{all_away_zero}, \tcode{all_to_even}, \tcode{all_to_odd}, \tcode{tie_to_neg_inf}, \tcode{tie_to_pos_inf}, and \tcode{tie_to_zero} are conditionally supported.
+
+Within the definition of the following functions, we use a defining function, which we do not expect will be directly represented in C++. It is \tcode{T round(mode,U)} where \tcode{U} either
+
+\begin{itemize}
+\item has a finer resolution than \tcode{T} or
+\item is evaluated as a real number expression.
+\end{itemize}
+
+We already have rounding functions for converting floating-point numbers to integers. However, we need a facility that extends to different sizes of floating-point and between other numeric types.
+
+\begin{itemdecl}
+template<typename T, typename U> T convert(rounding mode, U value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{round(mode, U)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<rounding mode, typename T, typename U> T convert(U value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{round<T>(mode, U)}.	
+\end{itemdescr}
+
+A division function has obvious utility.
+
+\begin{itemdecl}
+template<typename T> T divide(rounding mode, T dividend, T divisor)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{is round(mode, dividend/divisor)}. Remember that division evaluates as a real number. Obviously, the implementation will use a different strategy, but it must yield the same result.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<rounding mode, typename T> T divide(T dividend, T divisor)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{divide(mode, dividend, divisor)}.	
+\end{itemdescr}
+
+Division by a power of two has substantial implementation efficiencies, and is used heavily in fixed-point arithmetic as a scaling mechanism. We represent the conjunction of these approaches with a rounding scale down (right shift).
+
+\begin{itemdecl}
+template<typename T> T scale_down(rounding mode, T value, int bits)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{round(mode, dividend/$2^{bits}$)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<rounding mode, typename T> T scale_down(T value, int bits)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{scale_down(mode, dividend, bits)}.	
+\end{itemdescr}
+
+\rSec1[combined_rounding]{Combined Rounding and Overflow Operations}
+
+Some operations may reasonably both require rounding and require overflow detection.
+
+First and foremost, conversion from floating-point to integer may require handling a floating-point value that has both a finer resolution and a larger range than the integer can handle. The problem generalizes to arbitrary numeric types.
+
+\begin{itemdecl}
+template<typename T, typename U> T convert(overflow omode, rounding rmode, U value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{overflow(omode, numeric_limits<T>::min, numeric_limits<T>::max, round(rmode,value))}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow omode, rounding rmode, typename T, typename U> T convert(U value)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{convert(omode, rmode; value)}.	
+\end{itemdescr}
+
+Consider shifting as multiplication by a power of two. It has an analogy in a bidirectional shift, where a positive power is a left shift and a negative power is a right shift.
+
+\begin{itemdecl}
+template<typename T> T scale(overflow omode, rounding rmode, T value, int count)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{count < 0
+	? round(rmode,value*$2^{count}$)
+	: overflow(omode, numeric_limits<T>::min, numeric_limits<T>::max, value*$2^{count}$)}.	
+\end{itemdescr}
+
+\begin{itemdecl}
+template<overflow omode, rounding rmode, typename T> T scale(T value, int count)		
+\end{itemdecl}
+
+\begin{itemdescr}
+\returns \tcode{scale(omode, rmode value count)}.	
+\end{itemdescr}
+
+\rSec1[double_word_ops]{Double-Word Operations}
+
+There are two classes of functions, those that provide a result in a single double-wide type and those that provide a result split into two single-wide types.
+
+We expect programmers to use type names from \tcode{<cstdint>} or the parametric type aliases (below). Hence, we do not need to provide a means to infer one type size from the other. Within this section, we name these types as follows.
+
+We need a mechanism to specify the largest supported type for various combinations of function category and operation category. To that end, we propose macros as follows.
+
+We need a mechanism to build and split double-wide types. The lower part of the split is always an unsigned type.
+
+\begin{itemdecl}
+S split_upper( DS value );
+U split_lower( DS value );
+DS wide_build( S upper, U lower );
+
+U split_upper( DU value );
+U split_lower( DU value );
+DU wide_build( U upper, U lower );	
+\end{itemdecl}
+
+The arithmetic functions with an double-wide result are as follows. This category seems less important than the next category.
+
+\begin{itemdecl}
+DS wide_lsh( S multiplicand, int count );
+DS wide_add( S augend, S addend );
+DS wide_sub( S minuend, S subtrahend );
+DS wide_mul( S multiplicand, S multiplier );
+DS wide_add2( S augend, S addend1, S addend2 );
+DS wide_sub2( S minuend, S subtrahend1, S subtrahend2 );
+DS wide_lshadd( S multiplicand, int count, S addend );
+DS wide_lshsub( S multiplicand, int count, S subtrahend );
+DS wide_muladd( S multiplicand, S multiplier, S addend );
+DS wide_mulsub( S multiplicand, S multiplier, S subtrahend );
+DS wide_muladd2( S multiplicand, S multiplier, S addend1, S addend2 );
+DS wide_mulsub2( S multiplicand, S multiplier, S subtrahend1, S subtrahend2 );
+S wide_divn( DS dividend, S divisor );
+DS wide_divw( DS dividend, S divisor );
+S wide_divnrem( S* remainder, DS dividend, S divisor );
+DS wide_divnrem( S* remainder, DS dividend, S divisor );
+
+DU wide_lsh( U multiplicand, int count );
+DU wide_add( U augend, U addend );
+DU wide_sub( U minuend, U subtrahend );
+DU wide_mul( U multiplicand, U multiplier );
+DU wide_add2( U augend, U addend1, U addend2 );
+DU wide_sub2( U minuend, U subtrahend1, U subtrahend2 );
+DU wide_lshadd( U multiplicand, int count, U addend );
+DU wide_lshsub( U multiplicand, int count, U subtrahend );
+DU wide_muladd( U multiplicand, U multiplier, U addend );
+DU wide_mulsub( U multiplicand, U multiplier, U subtrahend );
+DU wide_muladd2( U multiplicand, U multiplier, U addend1, U addend2 );
+DU wide_mulsub2( U multiplicand, U multiplier, U subtrahend1, U subtrahend2 );
+U wide_divn( DU dividend, U divisor );
+DU wide_divw( DU dividend, U divisor );
+U wide_divnrem( U* remainder, DU dividend, U divisor );
+DU wide_divnrem( U* remainder, DU dividend, U divisor );		
+\end{itemdecl}
+
+The arithmetic functions with a split result are as follows. The lower part of the result is always an unsigned type. The lower part is returned through a pointer while the upper part is returned as the function result. The intent is that in loops, the lower part is written once to memory while the upper part is carried between iterations in a local variable.
+
+\begin{itemdecl}
+S split_lsh( U* product, S multiplicand, int count );
+S split_add( U* summand, S augend, S addend );
+S split_sub( U* difference, S minuend, S subtrahend );
+S split_mul( U* product, S multiplicand, S multiplier );
+S split_add2( U* summand, S value1, S addend1, S addend2 );
+S split_sub2( U* difference, S minuend, S subtrahend1, S subtrahend2 );
+S split_lshadd( U* product, S multiplicand, int count, S addend );
+S split_lshsub( U* product, S multiplicand, int count, S subtrahend );
+S split_muladd( U* product, S multiplicand, S addend1, S addend );
+S split_mulsub( U* product, S multiplicand, S subtrahend1, S subtrahend2 );
+S split_muladd2( U* product, S multiplicand, S multiplier, S addend1, S addend2 );
+S split_mulsub2( U* product, S multiplicand, S multiplier, S subtrahend1, S subtrahend2 );
+S split_divn( S dividend_upper, U dividend_lower, S divisor );
+DS split_divw( S dividend_upper, U dividend_lower, S divisor );
+S split_divnrem( S* remainder, S dividend_upper, U dividend_lower, S divisor );
+DS split_divwrem( S* remainder, S dividend_upper, U dividend_lower, S divisor );
+
+U split_lsh( U* product, U multiplicand, int count );
+U split_add( U* summand, U value1, U addend );
+U split_sub( U* difference, U minuend, U subtrahend );
+U split_mul( U* product, U multiplicand, U multiplier );
+U split_add2( U* summand, U value1, U addend1, U addend2 );
+U split_sub2( U* difference, U minuend, U subtrahend1, U subtrahend2 );
+U split_lshadd( U* product, U multiplicand, int count, U addend );
+U split_lshsub( U* product, U multiplicand, int count, U subtrahend );
+U split_muladd( U* product, U multiplicand, U multiplier, U addend );
+U split_mulsub( U* product, U multiplicand, U multiplier, U subtrahend );
+U split_muladd2( U* product, U multiplicand, U multiplier, U addend1, U addend2 );
+U split_mulsub2( U* product, U multiplicand, U multiplier, U subtrahend1, U subtrahend2 );
+U split_divn( U dividend_upper, U dividend_lower, U divisor );
+DU split_divw( U dividend_upper, U dividend_lower, U divisor );
+U split_divnrem( U* remainder, U dividend_upper, U dividend_lower, U divisor );
+DU split_divwrem( U* remainder, U dividend_upper, U dividend_lower, U divisor );		
+\end{itemdecl}
+
+\begin{itemdescr}
+\end{itemdescr}
