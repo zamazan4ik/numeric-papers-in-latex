@@ -1,0 +1,215 @@
+%!TEX root = ts.tex
+
+\rSec0[parametric_aliases]{Parametric aliases}
+
+Parametric aliases provide a machine-independent mechanism to specify the desired allocation size built-in or extended types.
+
+The following wording changes are relative to N4527.
+
+\rSec1[compliance]{Freestanding implementations}
+
+Add the following entry to table 16.
+
+\begin{addedblock}
+\begin{libreqtab3}
+    {Macros}
+    {tab:macros}
+    \\ \topline
+    \lhdr{chapter}  &
+    \chdr{description}  &
+    \rhdr{header} \\ \capsep
+    \endfirsthead
+    \continuedcaption\\
+    \hline
+    \lhdr{chapter}  &
+    \chdr{description}  &
+    \rhdr{header} \\ \capsep
+    \endhead
+    
+    18.4+ & Floating-point types & <cstdfloat>
+    \\ \rowsep     
+    
+\end{libreqtab3} 
+\end{addedblock}
+
+\rSec1[support.general]{General}
+
+Add the following entry to table 29.
+
+\begin{addedblock}
+    \begin{libreqtab3}
+        {Macros}
+        {tab:macros}
+        \\ \topline
+        \lhdr{chapter}  &
+        \chdr{description}  &
+        \rhdr{header} \\ \capsep
+        \endfirsthead
+        \continuedcaption\\
+        \hline
+        \lhdr{chapter}  &
+        \chdr{description}  &
+        \rhdr{header} \\ \capsep
+        \endhead
+        
+        18.4+ & Floating-point types & <cstdfloat>
+        \\ \rowsep     
+        
+    \end{libreqtab3} 
+\end{addedblock}
+
+\rSec1[cstdint.syn]{Header <cstdint>}
+
+Add the following entries to the synopsis before paragraph 1.
+
+\begin{addedblock}
+\begin{codeblock}
+namespace std {
+  template<int bits> alias exact_2int = implementation-defined;
+  template<int bits> alias fast_2int = implementation-defined;
+  template<int bits> alias least_2int = implementation-defined;
+  template<int bits> alias exact_2uint = implementation-defined;
+  template<int bits> alias fast_2uint = implementation-defined;
+  template<int bits> alias least_2uint = implementation-defined;
+}
+#define MAX_BITS_2INT implementation-defined;
+#define MAX_BITS_2UINT implementation-defined;
+\end{codeblock}    
+\end{addedblock}
+
+\rSec1[cstdint.parametric]{Parametric types}
+
+Add a new section with the following paragraphs.
+
+\begin{addedblock}
+The aliases below are conditionally supported. The macro \tcode{MAX_BITS_2INT} shall give the largest integer size (in bits) supported by the aliases. [Note: All variants support the same sizes. —end note] If these aliases are not supported, the value shall be 0. Any parameter to the alias shall be in the range 1 to \tcode{MAX_BITS_2INT}.
+
+\begin{itemdecl}
+template<int bits> alias exact_2int    
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{exact_2int} refers to a built-in signed binary integer type of exactly \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to int in promotion order. The type must represent negative values with two's-complement representation.    
+\end{itemdescr}
+
+\begin{itemdecl}
+template<int bits> alias fast_2int    
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{fast_2int} refers to the fastest built-in signed binary integer type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to int in promotion order. The type must represent negative values with two's-complement representation.    
+\end{itemdescr} 
+
+\begin{itemdecl}
+template<int bits> alias least_2int    
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{least_2int} refers to the smallest built-in signed binary integer type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to int in promotion order. The type must represent negative values with two's-complement representation.    
+\end{itemdescr} 
+
+\begin{itemdecl}
+template<int bits> alias exact_2uint    
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{exact_2uint} refers to a built-in unsigned binary integer type of exactly \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to unsigned int in promotion order.    
+\end{itemdescr} 
+
+\begin{itemdecl}
+template<int bits> alias fast_2uint    
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{fast_2uint} refers to the fastest built-in unsigned binary integer type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to unsigned int in promotion order.    
+\end{itemdescr} 
+
+\begin{itemdecl}
+template<int bits> alias least_2uint    
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{least_2uint} refers to the smallest built-in unsigned binary integer type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to unsigned int in promotion order.    
+\end{itemdescr}    
+\end{addedblock}
+
+\rSec1[cstdfloat]{Floating-point types}
+
+After section 18.4, add a new section. It has no direct contents.
+
+\rSec1[cstdfloat.syn]{Header <cstdfloat>}
+
+Add a new section.
+
+\begin{addedblock}
+    \begin{codeblock}
+namespace std {
+  template<int bits> alias exact_2ieeefloat = implementation-defined;
+  template<int bits> alias fast_2ieeefloat = implementation-defined;
+  template<int bits> alias least_2ieeefloat = implementation-defined;
+  template<int bits> alias exact_10ieeefloat = implementation-defined;
+  template<int bits> alias fast_10ieeefloat = implementation-defined;
+  template<int bits> alias least_10ieeefloat = implementation-defined;
+}
+#define MAX_BITS_2IEEEFLOAT implementation-defined;
+#define MAX_BITS_10IEEEFLOAT implementation-defined;
+    \end{codeblock}    
+\end{addedblock}
+
+\rSec1[cstdfloat.parametric]{Parametric types}
+
+Add a new section with the following paragraphs.
+
+\begin{addedblock}
+The aliases below are conditionally supported. The macro \tcode{MAX_BITS_2IEEEFLOAT} shall give the largest binary floating-point size (in bits) supported by the aliases. [Note: All variants support the same sizes. —end note] If none of these aliases are supported, the value shall be 0. The parameter to the alias shall be in the range 1 to \tcode{MAX_BITS_2IEEEFLOAT}.
+
+\begin{itemdecl}
+template<int bits> alias exact_2ieeefloat
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{exact_2ieeefloat} refers to a built-in binary floating-point type of exactly \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to double in promotion order. The type must use IEEE representation.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<int bits> alias fast_2ieeefloat
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{fast_2ieeefloat} refers to the fastest built-in binary floating-point type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to double in promotion order. The type must use IEEE representation.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<int bits> alias least_2ieeefloat
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{least_2ieeefloat} refers to the smallest built-in binary floating-point type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to double in promotion order. The type must use IEEE representation.
+\end{itemdescr}
+
+The aliases below are conditionally supported. The macro \tcode{MAX_BITS_10IEEEFLOAT} shall give the largest decimal floating point size (in bits) supported by the aliases. [Note: All variants support the same sizes. —end note] If none of these aliases are supported, the value shall be 0. The parameter to the alias shall be in the range 1 to \tcode{MAX_BITS_10IEEEFLOAT}.
+
+\begin{itemdecl}
+template<int bits> alias exact_10ieeefloat
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{exact_10ieeefloat} refers to a built-in decimal floating-point type of exactly \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to double in promotion order. The type must use IEEE representation.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<int bits> alias fast_10ieeefloat
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{fast_10ieeefloat} refers to the fastest built-in decimal floating-point type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to double in promotion order. The type must use IEEE representation.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<int bits> alias least_10ieeefloat
+\end{itemdecl}
+
+\begin{itemdescr}
+The alias \tcode{least_10ieeefloat} refers to the smallest built-in decimal floating-point type of at least \tcode{bits} bits. If there are two types of the same size, it refers to the type that is closest to double in promotion order. The type must use IEEE representation.
+\end{itemdescr}   
+\end{addedblock}

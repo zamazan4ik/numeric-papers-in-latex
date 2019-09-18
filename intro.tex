@@ -89,3 +89,129 @@ The size of the result is statically known, but it may be different from (and ge
 All aspects of the representation are dynamic. Overflow is variables is avoided.
 
 Types may also be categorized by the size specification, which is generally by the number of bits in the representation or by the number of digits required.
+
+\rSec0[operations]{Operations}
+
+The various types will share many operations. To reduce suprise, these operations should have consistent names for consistent purposes.
+
+\begin{libreqtab3}
+    {Operations}
+    {tab:operations}
+    \\ \topline
+    \lhdr{operator}  &
+    \chdr{name}  &
+    \rhdr{operation} \\ \capsep
+    \endfirsthead
+    \continuedcaption\\
+    \hline
+    \lhdr{operator}  &
+    \chdr{name}  &
+    \rhdr{operation} \\ \capsep
+    \endhead
+
+\textbf{arithmetic} & &
+\\ \rowsep
+
+- & neg & negate
+\\ \rowsep
+
++ & add & add
+\\ \rowsep
+
+- & sub & subtract
+\\ \rowsep 
+
+* & mul & multiply
+\\ \rowsep
+
+& rdiv & divide with rounding
+\\ \rowsep
+
+& pdiv & divide with promotion
+\\ \rowsep
+
+& quorem & quotient and remainder
+\\ \rowsep 
+
+& mod & modulo
+\\ \rowsep
+
+& rem & remainder; different sign matching rules
+\\ \rowsep
+
+\textbf{scale/shift} & &
+\\ \rowsep
+
+& ssu & static scale up
+\\ \rowsep
+
+& ssd & static scale down with rounding
+\\ \rowsep
+
+& dsu & dynamic scale up
+\\ \rowsep
+
+& dsd & dynamic scale down with rounding
+\\ \rowsep
+
+& lsh & left shift
+\\ \rowsep
+
+& ash & arithmetic right shift
+\\ \rowsep
+
+& rsh & logical right shift
+\\ \rowsep
+
+& rtl & rotate left
+\\ \rowsep
+
+& rtr & rotate right
+\\ \rowsep
+
+\textbf{composite} & & 
+\\ \rowsep
+
+& add2 & add with two addends
+\\ \rowsep
+
+& sub2 & subtract with two subtrahends
+\\ \rowsep
+
+& lshadd & left shift and add
+\\ \rowsep
+
+& lshsub & left shift and sub
+\\ \rowsep
+
+& muladd & multiply and add
+\\ \rowsep
+
+& mulsub & multiply and subtract
+\\ \rowsep
+
+& muladd2 & multiply and add with two addends
+\\ \rowsep
+
+& mulsub2 & multiply and subtract with two subtrahends
+\\ \rowsep
+
+\textbf{bitwise} & &
+\\ \rowsep
+
+& not & 1's complement
+\\ \rowsep
+
+& and & and
+\\ \rowsep
+
+& xor & exclusive or
+\\ \rowsep
+
+& ior & inclusive or
+\\ \rowsep
+
+& dif & difference (a\&\~b)
+\\ \rowsep
+    
+\end{libreqtab3}    

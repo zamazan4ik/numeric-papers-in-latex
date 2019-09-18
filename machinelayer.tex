@@ -323,7 +323,81 @@ There are two classes of functions, those that provide a result in a single doub
 
 We expect programmers to use type names from \tcode{<cstdint>} or the parametric type aliases (below). Hence, we do not need to provide a means to infer one type size from the other. Within this section, we name these types as follows.
 
+\begin{libreqtab3}
+    {Double-word operations}
+    {tab:operations}
+    \\ \topline
+    \lhdr{name}  &
+    \rhdr{description} \\ \capsep
+    \endfirsthead
+    \continuedcaption\\
+    \hline
+    \lhdr{name}  &
+    \rhdr{description} \\ \capsep
+    \endhead
+    
+S & signed integer type
+\\ \rowsep
+
+U & unsigned integer type
+\\ \rowsep
+
+DS & signed integer type that is double the width of the S type
+\\ \rowsep
+
+DU unsigned integer type that is double the width of the U type
+\\ \rowsep
+    
+\end{libreqtab3}  
+
 We need a mechanism to specify the largest supported type for various combinations of function category and operation category. To that end, we propose macros as follows.
+
+\begin{libreqtab3}
+    {Macros}
+    {tab:macros}
+    \\ \topline
+    \lhdr{macro name}  &
+    \chdr{result category}  &
+    \rhdr{operation category} \\ \capsep
+    \endfirsthead
+    \continuedcaption\\
+    \hline
+    \lhdr{macro name}  &
+    \chdr{result category}  &
+    \rhdr{operation category} \\ \capsep
+    \endhead
+    
+LARGEST_DOUBLE_WIDE_ADD & double-wide & add, add2, sub, sub2
+\\ \rowsep    
+
+LARGEST_DOUBLE_WIDE_LSH & double-wide & lsh, lshadd
+\\ \rowsep
+
+LARGEST_DOUBLE_WIDE_MUL & double-wide & mul, muladd, muladd2, mulsub, mulsub2
+\\ \rowsep
+
+LARGEST_DOUBLE_WIDE_DIV & double-wide & divn, divw, divnrem, divwrem
+\\ \rowsep
+
+LARGEST_DOUBLE_WIDE_ALL & double-wide & the minimum size of the four macros above
+\\ \rowsep
+
+LARGEST_SINGLE_WIDE_ADD & single-wide & add, add2, sub, sub2
+\\ \rowsep
+
+LARGEST_SINGLE_WIDE_LSH & single-wide & lsh, lshadd
+\\ \rowsep
+
+LARGEST_SINGLE_WIDE_MUL & single-wide & mul, muladd, muladd2, mulsub, mulsub2
+\\ \rowsep
+
+LARGEST_SINGLE_WIDE_DIV & single-wide & divn, divw, divnrem, divwrem
+\\ \rowsep
+
+LARGEST_SINGLE_WIDE_ALL & double-wide & the minimum size of the four macros above
+\\ \rowsep 
+    
+\end{libreqtab3} 
 
 We need a mechanism to build and split double-wide types. The lower part of the split is always an unsigned type.
 
@@ -413,5 +487,68 @@ U split_divnrem( U* remainder, U dividend_upper, U dividend_lower, U divisor );
 DU split_divwrem( U* remainder, U dividend_upper, U dividend_lower, U divisor );		
 \end{itemdecl}
 
+\rSec0[machine_ext_layer]{Machine extension layer}
+
+The machine extension layer enables the implementation of extended types.
+
+\rSec1[word_array_ops]{Word-array operations}
+
+A word is the type provided by \tcode{LARGEST_SINGLE_WIDE_ALL} and defined above.
+
+We provide the following operations. These operations are not intended to provide complete multi-word operations, but rather to handle subarrays with uniform operations. Higher-level operations then compose these operations into a complete operation.
+
+\begin{itemdecl}
+U unsigned_subarray_addin_word U* multiplicand, int length, U addend );		
+\end{itemdecl}
+
 \begin{itemdescr}
+\effects Add the word \tcode{addend} to the \tcode{multiplicand} of length \tcode{length}, leaving the result in the \tcode{multiplicand}.
+
+\returns Any carry out from the accumulator.    	
 \end{itemdescr}
+
+\begin{itemdecl}
+U unsigned_subarray_add_word U* summand, const U* augend, int length, U addend );    
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Add the \tcode{addend} to the \tcode{augend} of length \tcode{length} writing the result to the \tcode{summand}, which is also of length \tcode{length}.
+
+\returns Any carry out from the \tcode{summand}.    
+\end{itemdescr}
+
+\begin{itemdecl}
+U unsigned_subarray_mulin_word U* product, int length, U multiplier );    
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Multiply the \tcode{product} of length \tcode{length} by the \tcode{multiplier}, leaving the result in the \tcode{product}.
+
+\returns Any carry out from the \tcode{product}.    
+\end{itemdescr}
+
+\begin{itemdecl}
+U unsigned_subarray_mul_word U* product, U* multiplicand, int length, U multiplier );    
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Multiply the \tcode{multiplicand} of length \tcode{length} by the \tcode{multiplier} writing the result to the \tcode{product}, which is also of length \tcode{length}.
+
+\returns Any carry out from the \tcode{product}.    
+\end{itemdescr}
+
+\begin{itemdecl}
+U unsigned_subarray_accmul_word U* accumulator, U* multiplicand, int length, U multiplier );    
+\end{itemdecl}
+
+\begin{itemdescr}
+\effects Multiply the \tcode{multiplicand} of length \tcode{length} by the \tcode{multiplier} adding the result to the \tcode{accumulator}, which is also of length \tcode{length}.
+
+\returns Any carry out from the \tcode{accumulator}.    
+\end{itemdescr}
+
+For each of the two add operations above, there is a corresponding subtract operation.
+
+For each of the seven operations above (add+sub+mul), there is a corresponding signed operation. The primary difference between the two is sign extension.
+
+For each of the fourteen operations in above, there is a corresponding operation where the 'right-hand' argument is a pointer to a subarray, which is also of length \tcode{length}.
