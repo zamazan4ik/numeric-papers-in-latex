@@ -7,6 +7,8 @@
 \definecolor{remclr}{rgb}{1,0,0}
 \definecolor{noteclr}{rgb}{0,0,1}
 
+\definecolor{sg6notes}{rgb}{0.69, 0.4, 0.0}
+
 \renewcommand{\added}[1]{\textcolor{addclr}{\uline{#1}}}
 \newcommand{\removed}[1]{\textcolor{remclr}{\sout{#1}}}
 \renewcommand{\changed}[2]{\removed{#1}\added{#2}}
@@ -17,26 +19,22 @@
 \newcommand{\changednb}[3]{\removednb{#1}{#2}\added{#3}}
 \newcommand{\remitem}[1]{\item\removed{#1}}
 
+\newcommand{\addmodif}[1]{\textcolor{blue}{{#1}}}
+\newcommand{\remmodif}[1]{\textcolor{red}{\sout{#1}}}
+
 \newcommand{\ednote}[1]{\textcolor{noteclr}{[Editor's note: #1] }}
 % \newcommand{\ednote}[1]{}
 
+\newenvironment{modifcommentblock}
+{
+\color{sg6notes}
+}
+{
+\color{black}
+}
 \newenvironment{addedblock}
 {
 \color{addclr}
-}
-{
-\color{black}
-}
-\newenvironment{addmodif}
-{
-\color{blue}
-}
-{
-\color{black}
-}
-\newenvironment{remmodif}
-{
-\color{magenta}
 }
 {
 \color{black}

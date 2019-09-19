@@ -388,16 +388,16 @@ bits(initializer_list<uint_least32_t> list);
 
 \begin{itemdecl}
 template <class CharT, class Traits, class Alloc>
-  explicit bits(const basic_string<CharT, Traits, Alloc>& str,
-                typename basic_string<CharT, Traits, Alloc>::size_t pos = 0,
-                typename basic_string<CharT, Traits, Alloc>::size_t count = basic_string<CharT>::npos,
-                CharT zero = CharT('0'),
-                CharT one = CharT('1'));
+  explicit bits::bits(const basic_string<CharT, Traits, Alloc>& str,
+                      typename basic_string<CharT, Traits, Alloc>::size_t pos = 0,
+                      typename basic_string<CharT, Traits, Alloc>::size_t count = basic_string<CharT>::npos,
+                      CharT zero = CharT('0'),
+                      CharT one = CharT('1'));
 template <class CharT>
-  explicit bits(const CharT *ptr,
-                typename basic_string<CharT>::size_t count = basic_string<CharT>::npos,
-                CharT zero = CharT('0'),
-                CharT one = CharT('1'));                      
+  explicit bits::bits(const CharT *ptr,
+                      typename basic_string<CharT>::size_t count = basic_string<CharT>::npos,
+                      CharT zero = CharT('0'),
+                      CharT one = CharT('1'));                      
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -710,7 +710,7 @@ template <class CharT, class Traits>
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Has the effect of \tcode{{ string temp; is >> temp; val = temp; }}.
+\effects Has the effect of \tcode{{ std::string temp; is >> temp; val = temp; }}.
 
 \returns \tcode{is}.		
 \end{itemdescr}
@@ -1018,7 +1018,7 @@ integer_data_proxy get_data_proxy();
 \end{itemdecl}
 
 \begin{itemdescr}
-\returns An object of type \tcode{integer_data_proxy} that can be used to examine and modify the internal storage of \tcode{*this}. If an object of type \tcode{integer_data_proxy} that refers to \tcode{*this} exists at the time of a call to this function, the function throws an exception object of type \tcode{runtime_error}.		
+\returns An object of type \tcode{integer_data_proxy} that can be used to examine and modify the internal storage of \tcode{*this}. If an object of type \tcode{integer_data_proxy} that refers to \tcode{*this} exists at the time of a call to this function, the function throws an exception object of type \tcode{std::runtime_error}.		
 \end{itemdescr}
 
 \rSec2[numeric.integer.ctors]{Constructors}
@@ -1570,7 +1570,7 @@ template <class Elem, class Traits>
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Has the effect of \tcode{{ string temp; is >> temp; val = integer(temp); }}.
+\effects Has the effect of \tcode{{ std::string temp; is >> temp; val = integer(temp); }}.
 
 \returns \tcode{is}.		
 \end{itemdescr}
