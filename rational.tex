@@ -1,0 +1,577 @@
+%!TEX root = ts.tex
+
+\rSec0[rational.math]{Rational math}
+
+\rSec1[rational.class]{Class \tcode{rational}}
+
+\begin{codeblock}
+class rational {
+public:
+    rational() noexcept;
+
+    rational(const rational& rat);
+    rational(rational&& rat) noexcept;
+
+    explicit rational(float num);
+    explicit rational(double num);
+    explicit rational(long double num);
+
+    explicit rational(integer num);
+
+    rational(integer num, integer den);
+
+    ~rational() noexcept;
+
+    rational& operator=(const rational& rat);
+    rational& operator=(rational&& rat) noexcept;
+
+    rational& operator=(integer num);
+    rational& assign(integer num, integer den);
+
+    void swap(rational& rhs) noexcept;
+
+    rational normalize() const;
+
+    integer numer() const;
+    integer denom() const;
+
+    explicit operator bool() const noexcept;
+
+    rational& negate() noexcept;
+    rational& invert() noexcept;
+
+    rational& operator++();
+    rational& operator--();
+
+    rational operator++(int);
+    rational operator--(int);
+
+    rational& operator+=(const integer& rhs);
+    rational& operator-=(const integer& rhs);
+    rational& operator*=(const integer& rhs);
+    rational& operator/=(const integer& rhs);
+
+    rational& operator+=(const rational& rhs);
+    rational& operator-=(const rational& rhs);
+    rational& operator*=(const rational& rhs);
+    rational& operator/=(const rational& rhs);
+};
+\end{codeblock}
+
+The numerator and denominator shall be stored internally in a \tcode{std::experimental::seminumeric::integer}.
+
+\tcode{rational} member functions:
+
+\begin{itemdecl}
+rational() noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Constructs a \tcode{rational} with a numerator equal to zero and a denominator equal to one.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational(const rational& rat);
+rational(rational&& rat);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Constructs a \tcode{rational} with a value of \tcode{rat}.
+\end{itemdescr}
+
+\begin{itemdecl}
+explicit rational(integer num);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Constructs a \tcode{rational} with a value of \tcode{num}.
+\end{itemdescr}
+
+\begin{itemdecl}
+explicit rational(float val);
+explicit rational(double val);
+explicit rational(long double val);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Constructs a \tcode{rational} with a value equal to \tcode{val}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational(integer num, integer den);
+\end{itemdecl}
+
+\begin{itemdescr}
+Requires: \tcode{den != 0}
+Effects: Constructs a \tcode{rational} given the specified numerator and denominator.
+\end{itemdescr}
+
+\begin{itemdecl}
+~rational() noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Destructs \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator=(const rational& rhs);
+rational& operator=(rational&& rhs) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Assigns \tcode{rhs} to \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator=(integer num);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Assigns \tcode{num} to \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& assign(integer num, integer den);
+\end{itemdecl}
+
+\begin{itemdescr}
+Requires: \tcode{den != 0}
+Effects: Assigns the specified numerator and denominator to \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+void swap(rational& rhs) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: Swaps \tcode{*this} and rhs.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational normalize() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: a \tcode{rational} equal to *this, but with the numerator and denominator having no common factor other than 1 and the denominator greater than 0. If the numerator is 0, the denominator shall be 1.
+\end{itemdescr}
+
+\begin{itemdecl}
+integer numer() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: the (possibly not normalized) numerator by value.
+\end{itemdescr}
+
+\begin{itemdecl}
+integer denom() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: the (possibly not normalized) denominator by value.
+\end{itemdescr}
+
+\begin{itemdecl}
+explicit operator bool() const noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: as if \tcode{*this != 0}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& negate() noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: changes the sign of \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& invert() noexept;
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: swaps the numerator and denominator.
+Requires: the numerator is non-zero.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\rSec2[rational.member.ops]{\tcode{rational } member operators:}
+
+\begin{itemdecl}
+rational& operator++();
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: adds 1 to \tcode{*this} and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator--();
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: subtracts 1 from \tcode{*this} and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator++(int);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: adds 1 to \tcode{*this} and stores the result in \tcode{*this}.
+Returns: the value of \tcode{*this} before the addition.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator--(int);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: subtracts 1 from \tcode{*this} and stores the result in \tcode{*this}.
+Returns: the value of \tcode{*this} before the subtraction.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator+=(const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: adds the integer value rhs to \tcode{*this} and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator-=(const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: subtracts the integer value rhs from \tcode{*this} and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator*=(const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: multiplies \tcode{*this} by the integer value rhs and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator/=(const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: divides \tcode{*this} by the integer value rhs and stores the result in \tcode{*this}.
+Requires: \tcode{rhs != 0}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator+=(const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: adds the rational value rhs to \tcode{*this} and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator-=(const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: subtracts the rational value rhs from \tcode{*this} and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator*=(const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: multiplies \tcode{*this} by the rational value \tcode{rhs} and stores the result in \tcode{*this}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational& operator/=(const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Effects: divides \tcode{*this} by the rational value \tcode{rhs} and stores the result in \tcode{*this}.
+Requires: \tcode{rhs != 0}.
+Returns: \tcode{*this}.
+\end{itemdescr}
+
+\rSec2[rational.ops]{\tcode{rational } non-member operators:}
+
+\begin{itemdecl}
+rational operator+(const rational& val);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(val)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator-(const rational& val);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(val).negate()}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator+(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(lhs) += rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator-(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(lhs) -= rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator*(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(lhs) *= rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator/(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Requires: \tcode{rhs != 0}.
+Returns: \tcode{rational(lhs) /= rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator+(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(lhs) += rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator-(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(lhs) -= rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator*(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(lhs) *= rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator/(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Requires: \tcode{rhs != 0}.
+Returns: \tcode{rational(lhs) /= rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator+(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(rhs) += lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator-(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(rhs).negate() += lhs}.
+\end{itemdescr}
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator*(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rational(rhs) *= lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+rational operator/(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Requires: \tcode{rhs != 0}.
+Returns: \tcode{rational(rhs).invert() *= lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator==(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: as if \tcode{lhs.numer() * rhs.denom() == rhs.numer() * lhs.denom()}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator!=(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{!(lhs == rhs)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: as if \tcode{lhs.numer() * rhs.denom() < rhs.numer() * lhs.denom()}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rhs < lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<=(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{lhs < rhs || lhs == rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>=(const rational& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{lhs > rhs || lhs == rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator==(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: as if after normalization \tcode{lhs.numer() == rhs && lhs.denom() == 1}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator!=(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{!(lhs == rhs)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: as if \tcode{lhs.numer() < rhs * lhs.denom()}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: as if \tcode{lhs.numer() > rhs * lhs.denom()}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<=(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{lhs < rhs || lhs == rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>=(const rational& lhs, const integer& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{lhs > rhs || lhs == rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator==(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rhs == lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator!=(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rhs != lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rhs > lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rhs < lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator<=(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rhs >= lhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+bool operator>=(const integer& lhs, const rational& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+Returns: \tcode{rhs <= lhs}.
+\end{itemdescr}
