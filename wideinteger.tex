@@ -1,18 +1,21 @@
 %!TEX root = ts.tex
 
-\rSec0[wide_integer]{Wide_integer}
+\rSec0[wide_integer]{Wide Integers}
 
 
 \indexlibrary{\idxhdr{wide_integer}}%
 \rSec1[numeric.limits]{Class template \tcode{numeric_limits}}
-[Note to editor: Add the following sentence after the sentence "Specializations shall be provided for each arithmetic type, both floating-point and integer, including bool." (first sentence in fourth paragraph in [numeric.limits]) - end note]
+Add the following sentence after the sentence "Specializations shall be provided for each arithmetic type, both floating-point and integer, including bool." (first sentence in fourth paragraph in [numeric.limits]):
 
+\begin{addedblock}
 Specializations shall be also provided for \tcode{wide_integer} type.
 
 \begin{note}
 If there is a built-in integral type \tcode{Integral} that has the same signedness and width as \tcode{wide_integer<Bits, S>}, then \tcode{numeric_limits<wide_integer<Bits, S>>} specialized in the same way as \tcode{numeric_limits<Integral>}
 \end{note}
+\end{addedblock}
 
+\begin{addedblock}
 \rSec1[numeric.wide_integer.syn]{Header \tcode{<wide_integer>} synopsis}
 
 \begin{codeblock}
@@ -405,7 +408,7 @@ template <typename Arithmetic> constexpr operator Arithmetic() const noexcept;
 \begin{itemdecl}
 template<size_t Bits, typename S, size_t Bits2, typename S2>
 struct common_type<wide_integer<Bits, S>, wide_integer<Bits2, S2>> {
-    using type = wide_integer<max(Bits, Bits2), see below>;
+    using type = wide_integer<max(Bits, Bits2), @\seebelow@>;
 };
 \end{itemdecl}
 
@@ -424,7 +427,7 @@ The signed template parameter indicated by this specialization is following:
 \begin{itemdecl}
 template<size_t Bits, typename S, typename Arithmetic>
 struct common_type<wide_integer<Bits, S>, Arithmetic> {
-    using type = see below;
+    using type = @\seebelow@;
 };
 
 template<typename Arithmetic, size_t Bits, typename S>
@@ -702,3 +705,4 @@ template<size_t Bits, typename S> struct hash<wide_integer<Bits, S>>;
 \end{itemdecl}
 
 The specialization is enabled (20.14.14). If there is a built-in integral type \tcode{Integral} that has the same typename and width as \tcode{wide_integer<Bits, S>}, and \tcode{wi} is an object of type \tcode{wide_integer<Bits, S>}, then \tcode{hash<wide_integer<MachineWords, S>>()(wi) == hash<Integral>()(Integral(wi))}.
+\end{addedblock}

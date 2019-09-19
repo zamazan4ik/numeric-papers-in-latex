@@ -65,16 +65,16 @@ Add the following entries to the synopsis before paragraph 1.
 \begin{addedblock}
 \begin{codeblock}
 namespace std {
-  template<int bits> alias exact_2int = implementation-defined;
-  template<int bits> alias fast_2int = implementation-defined;
-  template<int bits> alias least_2int = implementation-defined;
-  template<int bits> alias exact_2uint = implementation-defined;
-  template<int bits> alias fast_2uint = implementation-defined;
-  template<int bits> alias least_2uint = implementation-defined;
+  template<int bits> alias exact_2int = @\impdefx{}@;
+  template<int bits> alias fast_2int = @\impdefx{}@;
+  template<int bits> alias least_2int = @\impdefx{}@;
+  template<int bits> alias exact_2uint = @\impdefx{}@;
+  template<int bits> alias fast_2uint = @\impdefx{}@;
+  template<int bits> alias least_2uint = @\impdefx{}@;
 }
-#define MAX_BITS_2INT implementation-defined;
-#define MAX_BITS_2UINT implementation-defined;
-\end{codeblock}    
+#define MAX_BITS_2INT @\impdefx{}@;
+#define MAX_BITS_2UINT @\impdefx{}@;
+\end{codeblock}
 \end{addedblock}
 
 \rSec1[cstdint.parametric]{Parametric types}
@@ -144,15 +144,15 @@ Add a new section.
 \begin{addedblock}
     \begin{codeblock}
 namespace std {
-  template<int bits> alias exact_2ieeefloat = implementation-defined;
-  template<int bits> alias fast_2ieeefloat = implementation-defined;
-  template<int bits> alias least_2ieeefloat = implementation-defined;
-  template<int bits> alias exact_10ieeefloat = implementation-defined;
-  template<int bits> alias fast_10ieeefloat = implementation-defined;
-  template<int bits> alias least_10ieeefloat = implementation-defined;
+  template<int bits> alias exact_2ieeefloat = @\impdefx{}@;
+  template<int bits> alias fast_2ieeefloat = @\impdefx{}@;
+  template<int bits> alias least_2ieeefloat = @\impdefx{}@;
+  template<int bits> alias exact_10ieeefloat = @\impdefx{}@;
+  template<int bits> alias fast_10ieeefloat = @\impdefx{}@;
+  template<int bits> alias least_10ieeefloat = @\impdefx{}@;
 }
-#define MAX_BITS_2IEEEFLOAT implementation-defined;
-#define MAX_BITS_10IEEEFLOAT implementation-defined;
+#define MAX_BITS_2IEEEFLOAT @\impdefx{}@;
+#define MAX_BITS_10IEEEFLOAT @\impdefx{}@;
     \end{codeblock}    
 \end{addedblock}
 
