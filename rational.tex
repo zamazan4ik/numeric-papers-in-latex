@@ -67,7 +67,7 @@ rational() noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Constructs a \tcode{rational} with a numerator equal to zero and a denominator equal to one.
+\effects Constructs a \tcode{rational} with a numerator equal to zero and a denominator equal to one.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -76,7 +76,7 @@ rational(rational&& rat);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Constructs a \tcode{rational} with a value of \tcode{rat}.
+\effects Constructs a \tcode{rational} with a value of \tcode{rat}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -84,7 +84,7 @@ explicit rational(integer num);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Constructs a \tcode{rational} with a value of \tcode{num}.
+\effects Constructs a \tcode{rational} with a value of \tcode{num}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -94,7 +94,7 @@ explicit rational(long double val);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Constructs a \tcode{rational} with a value equal to \tcode{val}.
+\effects Constructs a \tcode{rational} with a value equal to \tcode{val}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -102,8 +102,8 @@ rational(integer num, integer den);
 \end{itemdecl}
 
 \begin{itemdescr}
-Requires: \tcode{den != 0}
-Effects: Constructs a \tcode{rational} given the specified numerator and denominator.
+\requires \tcode{den != 0}
+\effects Constructs a \tcode{rational} given the specified numerator and denominator.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -111,7 +111,7 @@ Effects: Constructs a \tcode{rational} given the specified numerator and denomin
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Destructs \tcode{*this}.
+\effects Destructs \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -120,8 +120,9 @@ rational& operator=(rational&& rhs) noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Assigns \tcode{rhs} to \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Assigns \tcode{rhs} to \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -129,8 +130,9 @@ rational& operator=(integer num);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Assigns \tcode{num} to \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Assigns \tcode{num} to \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -138,9 +140,11 @@ rational& assign(integer num, integer den);
 \end{itemdecl}
 
 \begin{itemdescr}
-Requires: \tcode{den != 0}
-Effects: Assigns the specified numerator and denominator to \tcode{*this}.
-Returns: \tcode{*this}.
+\requires \tcode{den != 0}
+
+\effects Assigns the specified numerator and denominator to \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -148,7 +152,7 @@ void swap(rational& rhs) noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: Swaps \tcode{*this} and rhs.
+\effects Swaps \tcode{*this} and \tcode{rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -156,7 +160,7 @@ rational normalize() const;
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: a \tcode{rational} equal to *this, but with the numerator and denominator having no common factor other than 1 and the denominator greater than 0. If the numerator is 0, the denominator shall be 1.
+\returns A \tcode{rational} equal to \tcode{*this}, but with the numerator and denominator having no common factor other than 1 and the denominator greater than 0. If the numerator is 0, the denominator shall be 1.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -164,7 +168,7 @@ integer numer() const;
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: the (possibly not normalized) numerator by value.
+\returns The (possibly not normalized) numerator by value.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -172,7 +176,7 @@ integer denom() const;
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: the (possibly not normalized) denominator by value.
+\returns The (possibly not normalized) denominator by value.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -180,7 +184,7 @@ explicit operator bool() const noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: as if \tcode{*this != 0}.
+\returns As if \tcode{*this != 0}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -188,8 +192,9 @@ rational& negate() noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: changes the sign of \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Changes the sign of \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -197,9 +202,11 @@ rational& invert() noexept;
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: swaps the numerator and denominator.
-Requires: the numerator is non-zero.
-Returns: \tcode{*this}.
+\requires the numerator is non-zero.
+    
+\effects Swaps the numerator and denominator.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \rSec2[rational.member.ops]{\tcode{rational } member operators:}
@@ -209,8 +216,9 @@ rational& operator++();
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: adds 1 to \tcode{*this} and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Adds 1 to \tcode{*this} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -218,8 +226,9 @@ rational& operator--();
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: subtracts 1 from \tcode{*this} and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Subtracts 1 from \tcode{*this} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -227,8 +236,8 @@ rational operator++(int);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: adds 1 to \tcode{*this} and stores the result in \tcode{*this}.
-Returns: the value of \tcode{*this} before the addition.
+\effects Adds 1 to \tcode{*this} and stores the result in \tcode{*this}.
+\returns The value of \tcode{*this} before the addition.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -236,8 +245,9 @@ rational operator--(int);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: subtracts 1 from \tcode{*this} and stores the result in \tcode{*this}.
-Returns: the value of \tcode{*this} before the subtraction.
+\effects Subtracts 1 from \tcode{*this} and stores the result in \tcode{*this}.
+
+\returns The value of \tcode{*this} before the subtraction.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -245,8 +255,9 @@ rational& operator+=(const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: adds the integer value rhs to \tcode{*this} and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Adds the integer value \tcode{rhs} to \tcode{*this} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -254,8 +265,9 @@ rational& operator-=(const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: subtracts the integer value rhs from \tcode{*this} and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Subtracts the integer value \tcode{rhs} from \tcode{*this} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -263,8 +275,9 @@ rational& operator*=(const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: multiplies \tcode{*this} by the integer value rhs and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Multiplies \tcode{*this} by the integer value \tcode{rhs} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -272,9 +285,11 @@ rational& operator/=(const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: divides \tcode{*this} by the integer value rhs and stores the result in \tcode{*this}.
-Requires: \tcode{rhs != 0}.
-Returns: \tcode{*this}.
+\requires \tcode{rhs != 0}.
+    
+\effects Divides \tcode{*this} by the integer value \tcode{rhs} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -282,8 +297,9 @@ rational& operator+=(const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: adds the rational value rhs to \tcode{*this} and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Adds the rational value \tcode{rhs} to \tcode{*this} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -291,8 +307,9 @@ rational& operator-=(const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: subtracts the rational value rhs from \tcode{*this} and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Subtracts the rational value \tcode{rhs} from \tcode{*this} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -300,8 +317,9 @@ rational& operator*=(const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: multiplies \tcode{*this} by the rational value \tcode{rhs} and stores the result in \tcode{*this}.
-Returns: \tcode{*this}.
+\effects Multiplies \tcode{*this} by the rational value \tcode{rhs} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -309,9 +327,11 @@ rational& operator/=(const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Effects: divides \tcode{*this} by the rational value \tcode{rhs} and stores the result in \tcode{*this}.
-Requires: \tcode{rhs != 0}.
-Returns: \tcode{*this}.
+\requires \tcode{rhs != 0}.    
+    
+\effects Divides \tcode{*this} by the rational value \tcode{rhs} and stores the result in \tcode{*this}.
+
+\returns \tcode{*this}.
 \end{itemdescr}
 
 \rSec2[rational.ops]{\tcode{rational } non-member operators:}
@@ -321,7 +341,7 @@ rational operator+(const rational& val);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(val)}.
+\returns \tcode{rational(val)}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -329,7 +349,7 @@ rational operator-(const rational& val);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(val).negate()}.
+\returns \tcode{rational(val).negate()}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -337,7 +357,7 @@ rational operator+(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(lhs) += rhs}.
+\returns \tcode{rational(lhs) += rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -345,7 +365,7 @@ rational operator-(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(lhs) -= rhs}.
+\returns \tcode{rational(lhs) -= rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -353,7 +373,7 @@ rational operator*(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(lhs) *= rhs}.
+\returns \tcode{rational(lhs) *= rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -361,8 +381,9 @@ rational operator/(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Requires: \tcode{rhs != 0}.
-Returns: \tcode{rational(lhs) /= rhs}.
+\requires \tcode{rhs != 0}.
+
+\returns \tcode{rational(lhs) /= rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -370,7 +391,7 @@ rational operator+(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(lhs) += rhs}.
+\returns \tcode{rational(lhs) += rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -378,7 +399,7 @@ rational operator-(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(lhs) -= rhs}.
+\returns \tcode{rational(lhs) -= rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -386,7 +407,7 @@ rational operator*(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(lhs) *= rhs}.
+\returns \tcode{rational(lhs) *= rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -394,8 +415,9 @@ rational operator/(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Requires: \tcode{rhs != 0}.
-Returns: \tcode{rational(lhs) /= rhs}.
+\requires \tcode{rhs != 0}.
+
+\returns \tcode{rational(lhs) /= rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -403,7 +425,7 @@ rational operator+(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(rhs) += lhs}.
+\returns \tcode{rational(rhs) += lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -411,8 +433,7 @@ rational operator-(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(rhs).negate() += lhs}.
-\end{itemdescr}
+\returns \tcode{rational(rhs).negate() += lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -420,7 +441,7 @@ rational operator*(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rational(rhs) *= lhs}.
+\returns \tcode{rational(rhs) *= lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -428,8 +449,9 @@ rational operator/(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Requires: \tcode{rhs != 0}.
-Returns: \tcode{rational(rhs).invert() *= lhs}.
+\requires \tcode{rhs != 0}.
+
+\returns \tcode{rational(rhs).invert() *= lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -437,7 +459,7 @@ bool operator==(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: as if \tcode{lhs.numer() * rhs.denom() == rhs.numer() * lhs.denom()}.
+\returns As if \tcode{lhs.numer() * rhs.denom() == rhs.numer() * lhs.denom()}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -445,7 +467,7 @@ bool operator!=(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{!(lhs == rhs)}.
+\returns \tcode{!(lhs == rhs)}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -453,7 +475,7 @@ bool operator<(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: as if \tcode{lhs.numer() * rhs.denom() < rhs.numer() * lhs.denom()}.
+\returns As if \tcode{lhs.numer() * rhs.denom() < rhs.numer() * lhs.denom()}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -461,7 +483,7 @@ bool operator>(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rhs < lhs}.
+\returns \tcode{rhs < lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -469,7 +491,7 @@ bool operator<=(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{lhs < rhs || lhs == rhs}.
+\returns \tcode{lhs < rhs || lhs == rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -477,7 +499,7 @@ bool operator>=(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{lhs > rhs || lhs == rhs}.
+\returns \tcode{lhs > rhs || lhs == rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -485,7 +507,7 @@ bool operator==(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: as if after normalization \tcode{lhs.numer() == rhs && lhs.denom() == 1}.
+\returns As if after normalization \tcode{lhs.numer() == rhs \&\& lhs.denom() == 1}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -493,7 +515,7 @@ bool operator!=(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{!(lhs == rhs)}.
+\returns \tcode{!(lhs == rhs)}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -501,7 +523,7 @@ bool operator<(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: as if \tcode{lhs.numer() < rhs * lhs.denom()}.
+\returns As if \tcode{lhs.numer() < rhs * lhs.denom()}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -509,7 +531,7 @@ bool operator>(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: as if \tcode{lhs.numer() > rhs * lhs.denom()}.
+\returns As if \tcode{lhs.numer() > rhs * lhs.denom()}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -517,7 +539,7 @@ bool operator<=(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{lhs < rhs || lhs == rhs}.
+\returns \tcode{lhs < rhs || lhs == rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -525,7 +547,7 @@ bool operator>=(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{lhs > rhs || lhs == rhs}.
+\returns \tcode{lhs > rhs || lhs == rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -533,7 +555,7 @@ bool operator==(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rhs == lhs}.
+\returns \tcode{rhs == lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -541,7 +563,7 @@ bool operator!=(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rhs != lhs}.
+\returns \tcode{rhs != lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -549,7 +571,7 @@ bool operator<(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rhs > lhs}.
+\returns \tcode{rhs > lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -557,7 +579,7 @@ bool operator>(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rhs < lhs}.
+\returns \tcode{rhs < lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -565,7 +587,7 @@ bool operator<=(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rhs >= lhs}.
+\returns \tcode{rhs >= lhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -573,5 +595,5 @@ bool operator>=(const integer& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-Returns: \tcode{rhs <= lhs}.
+\returns \tcode{rhs <= lhs}.
 \end{itemdescr}
