@@ -204,23 +204,20 @@
 \newenvironment{example}[1][Example]{\noteintro{#1}}{\noteoutro{example}\xspace}
 
 %% Library function descriptions
-\newcommand{\Fundescx}[1]{\textit{#1}\xspace}
-\newcommand{\Fundesc}[1]{\Fundescx{#1:}}
+\newcommand{\Fundescx}[1]{\textit{#1}}
+\newcommand{\Fundesc}[1]{\Fundescx{#1:}\space}
 \newcommand{\required}{\Fundesc{Required behavior}}
 \newcommand{\requires}{\Fundesc{Requires}}
+\newcommand{\constraints}{\Fundesc{Constraints}}
+\newcommand{\mandates}{\Fundesc{Mandates}}
+\newcommand{\expects}{\Fundesc{Expects}}
 \newcommand{\effects}{\Fundesc{Effects}}
-\newcommand{\postconditions}{\Fundesc{Postconditions}}
-\newcommand{\postcondition}{\Fundesc{Postcondition}}
-\newcommand{\preconditions}{\requires}
-\newcommand{\precondition}{\requires}
+\newcommand{\ensures}{\Fundesc{Ensures}}
 \newcommand{\returns}{\Fundesc{Returns}}
 \newcommand{\throws}{\Fundesc{Throws}}
 \newcommand{\default}{\Fundesc{Default behavior}}
 \newcommand{\complexity}{\Fundesc{Complexity}}
-\newcommand{\remark}{\Fundesc{Remark}}
 \newcommand{\remarks}{\Fundesc{Remarks}}
-\newcommand{\realnote}{\Fundesc{Note}}
-\newcommand{\realnotes}{\Fundesc{Notes}}
 \newcommand{\errors}{\Fundesc{Error conditions}}
 \newcommand{\sync}{\Fundesc{Synchronization}}
 \newcommand{\implimits}{\Fundesc{Implementation limits}}

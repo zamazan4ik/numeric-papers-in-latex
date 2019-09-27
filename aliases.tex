@@ -60,18 +60,38 @@ Add the following entry to table 29.
 
 \rSec1[cstdint.syn]{Header <cstdint>}
 
+\begin{modifcommentblock}
+\begin{example}
+\begin{codeblock}
+exact_2uint<128> distance(exact_2uint<64> a, exact_2uint<64> b);
+exact_2uint<128> native_to_big_endian(exact_2uint<128> v);
+\end{codeblock}
+First function does not relay on underlying implementation. Users would like to get the result in a \tcode{wide_integer} type if there's no built-in 128bit type rather than getting an ill-formed program.
+
+Second function does relay on bit representation of a number. Users would like to get an ill-formed program if the \tcode{exact_2uint<128>} does not has the same representation as a native type.
+
+The question is: should we describe the layout of \tcode{wide_integer} type and make \tcode{*_2[u]int} return it if there's no built-in type?
+Or we should leave the \tcode{*_2[u]int} as-is and do not deal with code portability for both cases?
+\end{example}
+\end{modifcommentblock}
+
 Add the following entries to the synopsis before paragraph 1.
+
+\begin{modifcommentblock}
+\tcode{MAX_BITS_2INT} and \tcode{MAX_BITS_2UINT} should be \tcode{inline constexpr int} variables. What name should they have?
+\end{modifcommentblock}
 
 \begin{addedblock}
 \begin{codeblock}
 namespace std {
-  template<int bits> alias exact_2int = @\impdefx{}@;
-  template<int bits> alias fast_2int = @\impdefx{}@;
-  template<int bits> alias least_2int = @\impdefx{}@;
-  template<int bits> alias exact_2uint = @\impdefx{}@;
-  template<int bits> alias fast_2uint = @\impdefx{}@;
-  template<int bits> alias least_2uint = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_2int = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_2int = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_2int = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_2uint = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_2uint = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_2uint = @\impdefx{}@;
 }
+
 #define MAX_BITS_2INT @\impdefx{}@;
 #define MAX_BITS_2UINT @\impdefx{}@;
 \end{codeblock}
@@ -85,7 +105,7 @@ Add a new section with the following paragraphs.
 The aliases below are conditionally supported. The macro \tcode{MAX_BITS_2INT} shall give the largest integer size (in bits) supported by the aliases. [Note: All variants support the same sizes. —end note] If these aliases are not supported, the value shall be 0. Any parameter to the alias shall be in the range 1 to \tcode{MAX_BITS_2INT}.
 
 \begin{itemdecl}
-template<int bits> alias exact_2int    
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_2int    
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -93,7 +113,7 @@ The alias \tcode{exact_2int} refers to a built-in signed binary integer type of 
 \end{itemdescr}
 
 \begin{itemdecl}
-template<int bits> alias fast_2int    
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_2int    
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -101,7 +121,7 @@ The alias \tcode{fast_2int} refers to the fastest built-in signed binary integer
 \end{itemdescr} 
 
 \begin{itemdecl}
-template<int bits> alias least_2int    
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_2int    
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -109,7 +129,7 @@ The alias \tcode{least_2int} refers to the smallest built-in signed binary integ
 \end{itemdescr} 
 
 \begin{itemdecl}
-template<int bits> alias exact_2uint    
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_2uint    
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -117,7 +137,7 @@ The alias \tcode{exact_2uint} refers to a built-in unsigned binary integer type 
 \end{itemdescr} 
 
 \begin{itemdecl}
-template<int bits> alias fast_2uint    
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_2uint    
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -125,7 +145,7 @@ The alias \tcode{fast_2uint} refers to the fastest built-in unsigned binary inte
 \end{itemdescr} 
 
 \begin{itemdecl}
-template<int bits> alias least_2uint    
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_2uint    
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -141,15 +161,19 @@ After section 18.4, add a new section. It has no direct contents.
 
 Add a new section.
 
+\begin{modifcommentblock}
+\tcode{MAX_BITS_2IEEEFLOAT} and \tcode{MAX_BITS_10IEEEFLOAT} should be \tcode{inline constexpr int} variables. What name should they have?
+\end{modifcommentblock}
+
 \begin{addedblock}
     \begin{codeblock}
 namespace std {
-  template<int bits> alias exact_2ieeefloat = @\impdefx{}@;
-  template<int bits> alias fast_2ieeefloat = @\impdefx{}@;
-  template<int bits> alias least_2ieeefloat = @\impdefx{}@;
-  template<int bits> alias exact_10ieeefloat = @\impdefx{}@;
-  template<int bits> alias fast_10ieeefloat = @\impdefx{}@;
-  template<int bits> alias least_10ieeefloat = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_2ieeefloat = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_2ieeefloat = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_2ieeefloat = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_10ieeefloat = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_10ieeefloat = @\impdefx{}@;
+  template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_10ieeefloat = @\impdefx{}@;
 }
 #define MAX_BITS_2IEEEFLOAT @\impdefx{}@;
 #define MAX_BITS_10IEEEFLOAT @\impdefx{}@;
@@ -164,7 +188,7 @@ Add a new section with the following paragraphs.
 The aliases below are conditionally supported. The macro \tcode{MAX_BITS_2IEEEFLOAT} shall give the largest binary floating-point size (in bits) supported by the aliases. [Note: All variants support the same sizes. —end note] If none of these aliases are supported, the value shall be 0. The parameter to the alias shall be in the range 1 to \tcode{MAX_BITS_2IEEEFLOAT}.
 
 \begin{itemdecl}
-template<int bits> alias exact_2ieeefloat
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_2ieeefloat
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -172,7 +196,7 @@ The alias \tcode{exact_2ieeefloat} refers to a built-in binary floating-point ty
 \end{itemdescr}
 
 \begin{itemdecl}
-template<int bits> alias fast_2ieeefloat
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_2ieeefloat
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -180,7 +204,7 @@ The alias \tcode{fast_2ieeefloat} refers to the fastest built-in binary floating
 \end{itemdescr}
 
 \begin{itemdecl}
-template<int bits> alias least_2ieeefloat
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_2ieeefloat
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -190,7 +214,7 @@ The alias \tcode{least_2ieeefloat} refers to the smallest built-in binary floati
 The aliases below are conditionally supported. The macro \tcode{MAX_BITS_10IEEEFLOAT} shall give the largest decimal floating point size (in bits) supported by the aliases. [Note: All variants support the same sizes. —end note] If none of these aliases are supported, the value shall be 0. The parameter to the alias shall be in the range 1 to \tcode{MAX_BITS_10IEEEFLOAT}.
 
 \begin{itemdecl}
-template<int bits> alias exact_10ieeefloat
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ exact_10ieeefloat
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -198,7 +222,7 @@ The alias \tcode{exact_10ieeefloat} refers to a built-in decimal floating-point 
 \end{itemdescr}
 
 \begin{itemdecl}
-template<int bits> alias fast_10ieeefloat
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ fast_10ieeefloat
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -206,7 +230,7 @@ The alias \tcode{fast_10ieeefloat} refers to the fastest built-in decimal floati
 \end{itemdescr}
 
 \begin{itemdecl}
-template<int bits> alias least_10ieeefloat
+template<int bits> @\tcode{\remmodif{alias}\addmodif{using}}@ least_10ieeefloat
 \end{itemdecl}
 
 \begin{itemdescr}

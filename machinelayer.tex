@@ -524,18 +524,35 @@ The machine extension layer enables the implementation of extended types.
 
 \rSec1[word_array_ops]{Word-array operations}
 
+\begin{modifcommentblock}
+C++20 will have a \tcode{std::span} that is designed to be a replacement for \tcode{pointer*} + \tcode{size}. Is provides additional advantages:
+\begin{itemize}
+  \item bounds may be checked at compile time
+  \item compiler could unroll the internal loops knowing the bounds at compile time (an the bounds are known in case of \tcode{wide_integer})
+  \item \tcode{std::span} is more simple to use with continious containers and arrays
+  \item \tcode{std::span} protects from \tcode{nullptr}
+\end{itemize}
+Should it be used here?
+\end{modifcommentblock}
+
 A word is the type provided by \tcode{LARGEST_SINGLE_WIDE_ALL} and defined above.
 
 We provide the following operations. These operations are not intended to provide complete multi-word operations, but rather to handle subarrays with uniform operations. Higher-level operations then compose these operations into a complete operation.
 
+\begin{modifcommentblock}
+\tcode{wide_integer} could benefit from overloads that have an array version of last parameter, like \tcode{U* addend, int addend_length}.
+\end{modifcommentblock}
+
 \begin{itemdecl}
-@\addmodif{\tcode{constexpr }}@U unsigned_subarray_addin_word@\tcode{\addmodif{(}}@U* multiplicand, int length, U addend);		
+@\addmodif{\tcode{constexpr }}@U unsigned_subarray_addin_word@\tcode{\addmodif{(}}@U* multiplicand, int length, U addend);
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Add the word \tcode{addend} to the \tcode{multiplicand} of length \tcode{length}, leaving the result in the \tcode{multiplicand}.
+\addmodif{\expects \range{multiplicand}{multiplicand + length} is a valid range.}
 
-\returns Any carry out from the accumulator.    	
+\effects Add the word \tcode{addend} to the \tcode{multiplicand}\remmodif{ of length \tcode{length}}, leaving the result in the \tcode{multiplicand}.
+
+\returns Any carry out from the accumulator.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -543,39 +560,47 @@ We provide the following operations. These operations are not intended to provid
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Add the \tcode{addend} to the \tcode{augend} of length \tcode{length} writing the result to the \tcode{summand}, which is also of length \tcode{length}.
+\addmodif{\expects \range{multiplicand}{multiplicand + length} is a valid range. \range{augend}{augend + length} is a valid range.}
+
+\effects Add the \tcode{addend} to the \tcode{augend}\remmodif{ of length \tcode{length}} writing the result to the \tcode{summand}, which is also of length \tcode{length}.
 
 \returns Any carry out from the \tcode{summand}.    
 \end{itemdescr}
 
 \begin{itemdecl}
-@\addmodif{\tcode{constexpr }}@U unsigned_subarray_mulin_word@\tcode{\addmodif{(}}@U* product, int length, U multiplier);    
+@\addmodif{\tcode{constexpr }}@U unsigned_subarray_mulin_word@\tcode{\addmodif{(}}@U* product, int length, U multiplier);
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Multiply the \tcode{product} of length \tcode{length} by the \tcode{multiplier}, leaving the result in the \tcode{product}.
+\addmodif{\expects \range{product}{product + length} is a valid range.}
 
-\returns Any carry out from the \tcode{product}.    
-\end{itemdescr}
-
-\begin{itemdecl}
-@\addmodif{\tcode{constexpr }}@U unsigned_subarray_mul_word@\tcode{\addmodif{(}}@U* product, @\tcode{\addmodif{const }}@U* multiplicand, int length, U multiplier);    
-\end{itemdecl}
-
-\begin{itemdescr}
-\effects Multiply the \tcode{multiplicand} of length \tcode{length} by the \tcode{multiplier} writing the result to the \tcode{product}, which is also of length \tcode{length}.
+\effects Multiply the \tcode{product}\remmodif{ of length \tcode{length}} by the \tcode{multiplier}, leaving the result in the \tcode{product}.
 
 \returns Any carry out from the \tcode{product}.
 \end{itemdescr}
 
 \begin{itemdecl}
-@\addmodif{\tcode{constexpr }}@U unsigned_subarray_accmul_word@\tcode{\addmodif{(}}@U* accumulator, @\tcode{\addmodif{const }}@U* multiplicand, int length, U multiplier);    
+@\addmodif{\tcode{constexpr }}@U unsigned_subarray_mul_word@\tcode{\addmodif{(}}@U* product, @\tcode{\addmodif{const }}@U* multiplicand, int length, U multiplier);
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Multiply the \tcode{multiplicand} of length \tcode{length} by the \tcode{multiplier} adding the result to the \tcode{accumulator}, which is also of length \tcode{length}.
+\addmodif{\expects \range{product}{product + length} is a valid range. \range{multiplicand}{multiplicand + length} is a valid range.}
 
-\returns Any carry out from the \tcode{accumulator}.    
+\effects Multiply the \tcode{multiplicand}\remmodif{ of length \tcode{length}} by the \tcode{multiplier} writing the result to the \tcode{product}\remmodif{, which is also of length \tcode{length}}.
+
+\returns Any carry out from the \tcode{product}.
+\end{itemdescr}
+
+\begin{itemdecl}
+@\addmodif{\tcode{constexpr }}@U unsigned_subarray_accmul_word@\tcode{\addmodif{(}}@U* accumulator, @\tcode{\addmodif{const }}@U* multiplicand, int length, U multiplier);
+\end{itemdecl}
+
+\begin{itemdescr}
+\addmodif{\expects \range{accumulator}{accumulator + length} is a valid range. \range{multiplicand}{multiplicand + length} is a valid range.}
+
+\effects Multiply the \tcode{multiplicand}\remmodif{ of length \tcode{length}} by the \tcode{multiplier} adding the result to the \tcode{accumulator}\remmodif{, which is also of length \tcode{length}}.
+
+\returns Any carry out from the \tcode{accumulator}.
 \end{itemdescr}
 
 For each of the two add operations above, there is a corresponding subtract operation.

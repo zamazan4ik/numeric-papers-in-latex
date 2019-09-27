@@ -15,6 +15,10 @@ If there is a built-in integral type \tcode{Integral} that has the same signedne
 \end{note}
 \end{addedblock}
 
+\begin{modifcommentblock}
+This is the only paper that adjusts \tcode{numeric_limits}. Should the other papers adjust \tcode{numeric_limits} too?
+\end{modifcommentblock}
+
 \begin{addedblock}
 \rSec1[numeric.wide_integer.syn]{Header \tcode{<wide_integer>} synopsis}
 
@@ -86,7 +90,11 @@ namespace std {
   template<size_t Bits, typename S>
   common_type_t<wide_integer<Bits, S>, size_t>
     constexpr  operator>>(const wide_integer<Bits, S>& lhs, size_t rhs);
-  
+
+\begin{modifcommentblock}
+The spaceship operator shopuld be used here and in other papers.
+\end{modifcommentblock}
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
     constexpr bool operator<(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
   
