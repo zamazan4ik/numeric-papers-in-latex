@@ -27,6 +27,9 @@
 \iffalse %% Uncomment for the TS
 \makeevenfoot{cpppage}{\leftmark}{\copyright\,ISO/IEC {\copyrightyear} -- All rights reserved}{\thepage}
 \makeoddfoot{cpppage}{\leftmark}{\copyright\,ISO/IEC {\copyrightyear} -- All rights reserved}{\thepage}
+\else
+\makeevenfoot{cpppage}{\leftmark}{}{\thepage}
+\makeoddfoot{cpppage}{\leftmark}{}{\thepage}
 \fi
 
 \makeatletter
