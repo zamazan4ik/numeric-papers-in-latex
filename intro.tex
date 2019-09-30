@@ -7,7 +7,7 @@
 \iffalse %% Uncomment for the TS
 The mission of this specification is to make numbers easier to use.
 \else
-The mission of this document is to collect different numbers related proposals in one to make it simpler to discover issues and to simplify editors work of porting the papers to \LaTeX (all the \LaTeX sources are awailable at https://github.com/ZaMaZaN4iK/numeric-papers-in-latex.git ).
+The mission of this document is to highlight inconsistencies among different numbers related proposals, provide a possible solution for them, and update the wordings to be more suitable for the LWG.
 \fi
 
 \rSec1[intro.style]{Style of presentation}
@@ -17,6 +17,15 @@ Existing wording from the C++ working draft - included to provide context - is p
 Entire clauses / subclauses / paragraphs incorporated from different numbers related proposals are presented in a distinct cyan
 color.
 \end{addedblock}
+
+
+\addmodif{Wording to be added which is original to this document appears in blue.}
+
+\remmodif{Wording which this document strikes is presented in red with strike-through.}
+
+\begin{modifcommentblock}
+Notes and motivations for change are in brown.
+\end{modifcommentblock}
 
 \rSec1[intro.scope]{Scope}
 
@@ -35,7 +44,7 @@ Follow mathematical behavior where feasible.
 \end{itemize}
 \item Avoid or hide aliasing effects.
 \item Prefer compile-time errors to run-time errors.
-\item Prefer safe defaults to effient defaults.
+\item Prefer safe defaults to efficient defaults.
 \end{itemize}
 
 Provide types that match the taxonomic needs.
@@ -103,9 +112,15 @@ All aspects of the representation are dynamic. Overflow is variables is avoided.
 Types may also be categorized by the size specification, which is generally by the number of bits in the representation or by the number of digits required.
 
 \begin{addedblock}
+
+\begin{modifcommentblock}
+Should we place all the new sections from this document into the [numerics] and adjust the tags accordingly?
+\end{modifcommentblock}
+
+
 \rSec0[intro.operations]{Operations}
 
-The various types will share many operations. To reduce suprise, these operations should have consistent names for consistent purposes.
+The various types will share many operations. To reduce surprise, these operations should have consistent names for consistent purposes.
 
 \begin{libreqtab3}
     {Operations}
