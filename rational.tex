@@ -5,10 +5,14 @@
 
 \rSec1[rational.class]{Class \tcode{rational}}
 
+\begin{modifcommentblock}
+Default constructor of the class should be marked with \tcode{constexpr} so that the compiler could statically initialize it.
+\end{modifcommentblock}
+
 \begin{codeblock}
 class rational {
 public:
-    rational() noexcept;
+    @\addmodif{\tcode{constexpr }}@rational() noexcept;
 
     rational(const rational& rat);
     rational(rational&& rat) noexcept;
@@ -60,6 +64,10 @@ public:
 \end{codeblock}
 
 The numerator and denominator shall be stored internally in a \tcode{std::experimental::seminumeric::integer}.
+
+\begin{modifcommentblock}
+Probably \tcode{to_chars}, \tcode{from_chars}, I/O and \tcode{std::hash} overloads and specializations should be added.
+\end{modifcommentblock}
 
 \tcode{rational} member functions:
 
@@ -478,6 +486,10 @@ bool operator<(const rational& lhs, const rational& rhs);
 \begin{itemdescr}
 \returns As if \tcode{lhs.numer() * rhs.denom() < rhs.numer() * lhs.denom()}.
 \end{itemdescr}
+
+\begin{modifcommentblock}
+The spaceship operator should be used here and in other papers.
+\end{modifcommentblock}
 
 \begin{itemdecl}
 bool operator>(const rational& lhs, const rational& rhs);
