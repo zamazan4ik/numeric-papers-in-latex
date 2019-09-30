@@ -4,6 +4,14 @@
 
 \rSec1[numeric.integer_data_proxy.syn]{Class \tcode{integer_data_proxy}}
 
+\begin{modifcommentblock}
+The relation between \tcode{integer_data_proxy} and \tcode{integer} is not clear.
+Is \tcode{integer_data_proxy} owns the resources of \tcode{integer}?
+
+If not, then the \tcode{std::span} covers most of the functionality.
+\end{modifcommentblock}
+
+
 \begin{codeblock}
 namespace std {
   class integer_data_proxy {
@@ -48,7 +56,15 @@ namespace std {
 } // namespace std
 \end{codeblock}
 
+\begin{modifcommentblock}
+There's no default constructor in \tcode{integer_data_proxy}. This makes the class very hard to use.
+\end{modifcommentblock}
+
 The class describes an object that can be used to examine and modify the internal representation of an object of type \tcode{integer}. This allows advanced users to portably implement algorithms that are not provided natively.
+
+\begin{modifcommentblock}
+Looks like the requirement "There can be only one \tcode{integer_data_proxy} object" may add overhead to the implementation. Implementation has to refcount the active \tcode{integer_data_proxy} to assert that there's only one \tcode{integer_data_proxy}. This could be possibly avoided by adding a \tcode{integer_data_proxy(integer\&\& rhs);} constructor.
+\end{modifcommentblock}
 
 There can be only one \tcode{integer_data_proxy} object associated with a particular \tcode{integer} object at any given time; that object is obtained by calling the \tcode{get_data_proxy} member function on the \tcode{integer} object. The resulting object can be moved but not copied.
 
@@ -267,7 +283,12 @@ namespace std {
 
 } // namespace std
 \end{codeblock}
-       
+
+
+\begin{modifcommentblock}
+Class \tcode{bits} interferes with P0237 "Wording for fundamental bit manipulation utilities". We should not duplicate efforts.
+\end{modifcommentblock}
+
 \begin{codeblock}
 namespace std {
   class bits {
@@ -822,12 +843,16 @@ operator bool() const noexcept;
 
 \rSec1[numeric.integer.syn]{Integer}
 
+\begin{modifcommentblock}
+Default constructor of the class should be marked with \tcode{constexpr} so that the compiler could statically initialize it.
+\end{modifcommentblock}
+
 \begin{codeblock}
 namespace std {
   class integer {
   public:
     // constructors
-    integer() noexcept;
+    @\addmodif{\tcode{constexpr }}@integer() noexcept;
     
     template <class Ty>
       integer(Ty rhs) noexcept; // arithmetic types only
@@ -1012,6 +1037,10 @@ integer gcd(const integer& a, const integer& b);
 \begin{itemdescr}
 \returns An object whose value is the greatest common denominator of \tcode{a} and \tcode{b}.		
 \end{itemdescr}
+
+\begin{modifcommentblock}
+Should we also provide the \tcode{get_data_proxy()} functionality for \tcode{wide_integer}?
+\end{modifcommentblock}
 
 \begin{itemdecl}
 integer_data_proxy get_data_proxy();	
@@ -1260,7 +1289,7 @@ void swap(integer& lhs, integer& rhs) noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Swaps the stored values of \tcode{lhs} and \tcode{rhs}.		
+\effects Swaps the stored values of \tcode{lhs} and \tcode{rhs}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -1268,8 +1297,13 @@ void swap(integer& rhs) noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-\effects Swaps the stored values of \tcode{*this} and \tcode{rhs}.		
+\effects Swaps the stored values of \tcode{*this} and \tcode{rhs}.
 \end{itemdescr}
+
+
+\begin{modifcommentblock}
+\tcode{to_string} usually does not have a \tcode{radix} argument. Probably a \tcode{to_chars} overload should be used instead.
+\end{modifcommentblock}
 
 \begin{itemdecl}
 string to_string(const integer& val, int radix = 10) const;	
@@ -1314,6 +1348,10 @@ explicit operator unsigned long long() const;
 \end{itemdescr}
 
 \rSec2[numeric.integer.comp]{Comparison}
+
+\begin{modifcommentblock}
+Spaceship operator should be used.
+\end{modifcommentblock}
 
 \begin{itemdecl}
 bool operator==(const integer& lhs, const integer& rhs) noexcept;	
@@ -1564,6 +1602,10 @@ integer& operator>>=(size_t rhs);
 
 \rSec2[numeric.integer.io]{I/O}
 
+\begin{modifcommentblock}
+\tcode{wide_integer} adds \tcode{to_chars} and \tcode{from_chars} overloads. We should probably do the same here. \tcode{to_chars} overloads make the type usable with \tcode{std::format} functions.
+\end{modifcommentblock}
+
 \begin{itemdecl}
 template <class Elem, class Traits>
   basic_istream<Elem, Traits>& operator>>(basic_istream<Elem, Traits>& is, integer& val);	
@@ -1572,7 +1614,7 @@ template <class Elem, class Traits>
 \begin{itemdescr}
 \effects Has the effect of \tcode{{ std::string temp; is >> temp; val = integer(temp); }}.
 
-\returns \tcode{is}.		
+\returns \tcode{is}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -1603,4 +1645,9 @@ template <class Elem, class Traits>
 
 \returns \tcode{os}.		
 \end{itemdescr}
+
+\begin{modifcommentblock}
+Specialization of \tcode{hash} for \tcode{integer} is missing.
+\end{modifcommentblock}
+
 \end{addedblock}

@@ -2,8 +2,11 @@
 
 \rSec0[feature.test]{Feature test macros (Informative)}
 
-\pnum
-If an implementation supplies all of the conditionally-supported features specified in \ref{conformance.conditional}, <wide_integer> header in this document shall additionally define the \tcode{__cpp_lib_wide_integer} feature test macro.
+\begin{modifcommentblock}
+Each big numeric addition should have a feature testing macro. Not shure about a fearute testing macro for the whole Numbers TS.
+\end{modifcommentblock}
+
+\remmodif{ If an implementation supplies all of the conditionally-supported features specified in \ref{conformance.conditional}, <wide_integer> header in this document shall additionally define the \tcode{__cpp_lib_wide_integer} feature test macro.}
 
 \begin{floattable}{Feature-test macro(s)}{tab:info.features}
 {ll}
@@ -11,5 +14,9 @@ If an implementation supplies all of the conditionally-supported features specif
 \lhdr{Macro name} & \rhdr{Value} \\
 \capsep
 \tcode{__cpp_lib_wide_integer}  & \tcode{\tsver}      \\
+\addmodif{\tcode{__cpp_lib_integer}}  & \tcode{\tsver}      \\
+\addmodif{\tcode{__cpp_lib_numeric_aliases}}  & \tcode{\tsver}      \\
+\addmodif{\tcode{__cpp_lib_numeric_machine_layer}}  & \tcode{\tsver}      \\
+\addmodif{\tcode{__cpp_lib_rational}}  & \tcode{\tsver}      \\
 \end{floattable}
 

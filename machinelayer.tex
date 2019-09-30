@@ -7,7 +7,7 @@ The machine abstraction layer enables a mostly machine-independent implementatio
 \begin{modifcommentblock}
 Synopsys is missing.
 
-In what header the following functions are defained?
+In what header the following functions are defined?
 \end{modifcommentblock}
 
 \rSec1[overflow_detecting_ops]{Overflow-Detecting Operations}
@@ -28,7 +28,7 @@ For the above paragraph:
 Functions below could be used as a basic building block for \tcode{wide_integer}, however they miss a few important things:
 \begin{itemize}
   \item \tcode{constexpr} - almost all the operations on \tcode{wide_integer} are \tcode{constexpr}. Without \tcode{constexpr} the below functions are not usable with \tcode{wide_integer}.
-  \item \tcode{noexcept} - changing the pointer argument to a reference makes it impossible to pass a \tcode{nullptr} and to get an UB. This is quite helpfull for users and makes the below functions suit better the \tcode{wide_integer} needs.
+  \item \tcode{noexcept} - changing the pointer argument to a reference makes it impossible to pass a \tcode{nullptr} and to get an UB. This is quite helpful for users and makes the below functions suit better the \tcode{wide_integer} needs.
 \end{itemize}
 \end{modifcommentblock}
 
