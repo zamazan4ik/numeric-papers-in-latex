@@ -19,23 +19,25 @@ If there is a built-in integral type \tcode{Integral} that has the same signedne
 \rSec1[numeric.wide_integer.syn]{Header \tcode{<wide_integer>} synopsis}
 
 \begin{codeblock}
+#include <compare>
+
 namespace std {
-    
+
   // 26.??.2 class template wide_integer
   template<size_t Bits, typename S> class wide_integer;
-  
+
   // 26.??.?? type traits specializations
   template<size_t Bits, typename S, size_t Bits2, typename S2>
     struct common_type<wide_integer<Bits, S>, wide_integer<Bits2, S2>>;
-  
+
   template<size_t Bits, typename S, typename Arithmetic>
     struct common_type<wide_integer<Bits, S>, Arithmetic>;
-  
+
   template<typename Arithmetic, size_t Bits, typename S>
     struct common_type<Arithmetic, wide_integer<Bits, S>>
   : common_type<wide_integer<Bits, S>, Arithmetic>
   ;
-  
+
   // 26.??.?? unary operations
   template<size_t Bits, typename S>
     constexpr wide_integer<Bits, S> operator~(const wide_integer<Bits, S>& val) noexcept;
@@ -43,118 +45,106 @@ namespace std {
     constexpr wide_integer<Bits, S> operator-(const wide_integer<Bits, S>& val) noexcept(is_unsigned_v<S>);
   template<size_t Bits, typename S>
     constexpr wide_integer<Bits, S> operator+(const wide_integer<Bits, S>& val) noexcept(is_unsigned_v<S>);
-  
+
   // 26.??.?? binary operations
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr operator*(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs);
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr operator/(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs);
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr operator+(const wide_integer<Bits, S>& lhs,
                         const wide_integer<Bits2, S2>& rhs) noexcept(is_unsigned_v<S>);
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr operator-(const wide_integer<Bits, S>& lhs,
                         const wide_integer<Bits2, S2>& rhs) noexcept(is_unsigned_v<S>);
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr operator%(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs);
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr operator&(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr operator|(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
   common_type_t<wide_integer<Bits, S>, wide_integer<Bits2, S2>>
     constexpr  operator^(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
+
   template<size_t Bits, typename S>
   common_type_t<wide_integer<Bits, S>, size_t>
     constexpr  operator<<(const wide_integer<Bits, S>& lhs, size_t rhs);
-  
+
   template<size_t Bits, typename S>
   common_type_t<wide_integer<Bits, S>, size_t>
     constexpr  operator>>(const wide_integer<Bits, S>& lhs, size_t rhs);
-  
-  template<size_t Bits, typename S, size_t Bits2, typename S2>
-    constexpr bool operator<(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
-  template<size_t Bits, typename S, size_t Bits2, typename S2>
-    constexpr bool operator>(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
-  template<size_t Bits, typename S, size_t Bits2, typename S2>
-    constexpr bool operator<=(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
-  template<size_t Bits, typename S, size_t Bits2, typename S2>
-    constexpr bool operator>=(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
     constexpr bool operator==(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
+
   template<size_t Bits, typename S, size_t Bits2, typename S2>
-    constexpr bool operator!=(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
-  
+    constexpr strong_ordering operator<=>(const wide_integer<Bits, S>& lhs, const wide_integer<Bits2, S2>& rhs) noexcept;
+
   // 26.??.?? numeric conversions
   template<size_t Bits, typename S> std::string to_string(const wide_integer<Bits, S>& val);
   template<size_t Bits, typename S> std::wstring to_wstring(const wide_integer<Bits, S>& val);
-  
+
   // 26.??.?? iostream specializations
   template<class Char, class Traits, size_t Bits, typename S>
     basic_ostream<Char, Traits>& operator<<(basic_ostream<Char, Traits>& os,
                                             const wide_integer<Bits, S>& val);
-  
+
   template<class Char, class Traits, size_t Bits, typename S>
     basic_istream<Char, Traits>& operator>>(basic_istream<Char, Traits>& is,
                                             wide_integer<Bits, S>& val) noexcept;
-  
+
   // 26.??.?? hash support
   template<class T> struct hash;
   template<size_t Bits, typename S> struct hash<wide_integer<Bits, S>>;
-  
-  
+
+
   template <size_t Bits, typename S>
     to_chars_result to_chars(char* first, char* last, const wide_integer<Bits, S>& value,
                              int base = 10);
-  
+
   template <size_t Bits, typename S>
     from_chars_result from_chars(const char* first, const char* last, wide_integer<Bits, S>& value,
                                  int base = 10);
-  
+
   template <size_t Bits>
   using wide_int = wide_integer<Bits, signed>;
-  
+
   template <size_t Bits>
   using wide_uint = wide_integer<Bits, unsigned>
-  
+
   // optional literals
   inline namespace literals {
   inline namespace wide_int_literals {
-        
+
   constexpr wide_int<128> operator "" _int128(const char*);
   constexpr wide_int<256> operator "" _int256(const char*);
   constexpr wide_int<512> operator "" _int512(const char*);
   constexpr wide_uint<128> operator "" _uint128(const char*);
   constexpr wide_uint<256> operator "" _uint256(const char*);
   constexpr wide_uint<512> operator "" _uint512(const char*);
-        
+
   } // namespace wide_int_literals
   } // namespace literals
 
 } // namespace std
 \end{codeblock}
 
-The header <wide_integer> defines class template wide_integer and a set of operators for representing and manipulating integers of specified width. 
+The header <wide_integer> defines class template wide_integer and a set of operators for representing and manipulating integers of specified width.
 
 Example:
 \begin{codeblock}
@@ -166,12 +156,12 @@ int256_t a = 13;
 a += 0xFF;
 a *= 2.0;
 a -= 12_int128;
-assert(a > 0);    
+assert(a > 0);
 \end{codeblock}
 
 
 \rSec1[numeric.wide_integer.overview]{Template class \tcode{wide_integer} overview}
-       
+
 \begin{codeblock}
 namespace std {
   template<size_t Bits, typename S>
@@ -189,63 +179,63 @@ namespace std {
       constexpr wide_integer<Bits, S>& operator=(const Arithmetic& other) noexcept;
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator=(const wide_integer<Bits2, S2>& other) noexcept;
-    
+
     // 26.??.2.?? compound assignment:
     template<typename Arithmetic>
       constexpr wide_integer<Bits, S>& operator*=(const Arithmetic&);
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator*=(const wide_integer<Bits2, S2>&);
-    
+
     template<typename Arithmetic>
       constexpr wide_integer<Bits, S>& operator/=(const Arithmetic&);
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator/=(const wide_integer<Bits2, S2>&);
-    
+
     template<typename Arithmetic>
       constexpr wide_integer<Bits, S>& operator+=(const Arithmetic&) noexcept(is_unsigned_v<S>);
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator+=(const wide_integer<Bits2, S2>&) noexcept(is_unsigned_v<S>);
-    
+
     template<typename Arithmetic>
       constexpr wide_integer<Bits, S>& operator-=(const Arithmetic&) noexcept(is_unsigned_v<S>);
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator-=(const wide_integer<Bits2, S2>&) noexcept(is_unsigned_v<S>);
-    
+
     template<typename Integral>
       constexpr wide_integer<Bits, S>& operator%=(const Integral&);
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator%=(const wide_integer<Bits2, S2>&);
-    
+
     template<typename Integral>
       constexpr wide_integer<Bits, S>& operator&=(const Integral&) noexcept;
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator&=(const wide_integer<Bits2, S2>&) noexcept;
-    
+
     template<typename Integral>
       constexpr wide_integer<Bits, S>& operator|=(const Integral&) noexcept;
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator|=(const wide_integer<Bits2, S2>&) noexcept;
-    
+
     template<typename Integral>
       constexpr wide_integer<Bits, S>& operator^=(const Integral&) noexcept;
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator^=(const wide_integer<Bits2, S2>&) noexcept;
-    
+
     template<typename Integral>
       constexpr wide_integer<Bits, S>& operator<<=(const Integral&);
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator<<=(const wide_integer<Bits2, S2>&);
-    
+
     template<typename Integral>
       constexpr wide_integer<Bits, S>& operator>>=(const Integral&) noexcept;
     template<size_t Bits2, typename S2>
       constexpr wide_integer<Bits, S>& operator>>=(const wide_integer<Bits2, S2>&) noexcept;
-    
+
     constexpr wide_integer<Bits, S>& operator++() noexcept(is_unsigned_v<S>);
     constexpr wide_integer<Bits, S> operator++(int) noexcept(is_unsigned_v<S>);
     constexpr wide_integer<Bits, S>& operator--() noexcept(is_unsigned_v<S>);
     constexpr wide_integer<Bits, S> operator--(int) noexcept(is_unsigned_v<S>);
-    
+
     // 26.??.2.?? observers:
     template <typename Arithmetic> constexpr operator Arithmetic() const noexcept;
       constexpr explicit operator bool() const noexcept;
@@ -298,7 +288,7 @@ template<typename Arithmetic>
 \end{itemdescr}
 
 \begin{itemdecl}
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer(const wide_integer<Bits2, S2>& other) noexcept;
 \end{itemdecl}
 
@@ -319,7 +309,7 @@ template<typename Arithmetic>
 
 \begin{itemdecl}
 template<size_t Bits2, typename S2>
-  constexpr wide_integer<Bits, S>& operator=(const wide_integer<Bits2, S2>& other) noexcept;    
+  constexpr wide_integer<Bits, S>& operator=(const wide_integer<Bits2, S2>& other) noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -329,25 +319,25 @@ template<size_t Bits2, typename S2>
 \rSec2[numeric.wide_integer.cassign]{\tcode{wide_integer} compound assignments}
 
 \begin{itemdecl}
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator*=(const wide_integer<Bits2, S2>&);
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator/=(const wide_integer<Bits2, S2>&);
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator+=(const wide_integer<Bits2, S2>&) noexcept(is_unsigned_v<S>);
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator-=(const wide_integer<Bits2, S2>&) noexcept(is_unsigned_v<S>);
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator%=(const wide_integer<Bits2, S2>&);
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator&=(const wide_integer<Bits2, S2>&) noexcept;
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator|=(const wide_integer<Bits2, S2>&) noexcept;
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator^=(const wide_integer<Bits2, S2>&) noexcept;
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator<<=(const wide_integer<Bits2, S2>&);
-template<size_t Bits2, typename S2> 
+template<size_t Bits2, typename S2>
   constexpr wide_integer<Bits, S>& operator>>=(const wide_integer<Bits2, S2>&) noexcept;
 constexpr wide_integer<Bits, S>& operator++() noexcept(is_unsigned_v<S>);
 constexpr wide_integer<Bits, S> operator++(int) noexcept(is_unsigned_v<S>);
@@ -360,13 +350,13 @@ constexpr wide_integer<Bits, S> operator--(int) noexcept(is_unsigned_v<S>);
 \end{itemdescr}
 
 \begin{itemdecl}
-template<typename Arithmetic> 
+template<typename Arithmetic>
   constexpr wide_integer<Bits, S>& operator*=(const Arithmetic&);
-template<typename Arithmetic> 
+template<typename Arithmetic>
   constexpr wide_integer<Bits, S>& operator/=(const Arithmetic&);
-template<typename Arithmetic> 
+template<typename Arithmetic>
   constexpr wide_integer<Bits, S>& operator+=(const Arithmetic&) noexcept(is_unsigned_v<S>);
-template<typename Arithmetic> 
+template<typename Arithmetic>
   constexpr wide_integer<Bits, S>& operator-=(const Arithmetic&) noexcept(is_unsigned_v<S>);
 \end{itemdecl}
 
@@ -375,17 +365,17 @@ template<typename Arithmetic>
 \end{itemdescr}
 
 \begin{itemdecl}
-template<typename Integral> 
+template<typename Integral>
   constexpr wide_integer<Bits, S>& operator%=(const Integral&);
-template<typename Integral> 
+template<typename Integral>
   constexpr wide_integer<Bits, S>& operator&=(const Integral&) noexcept;
-template<typename Integral> 
+template<typename Integral>
   constexpr wide_integer<Bits, S>& operator|=(const Integral&) noexcept;
-template<typename Integral> 
+template<typename Integral>
   constexpr wide_integer<Bits, S>& operator^=(const Integral&) noexcept;
-template<typename Integral> 
+template<typename Integral>
   constexpr wide_integer<Bits, S>& operator<<=(const Integral&);
-template<typename Integral> 
+template<typename Integral>
   constexpr wide_integer<Bits, S>& operator>>=(const Integral&) noexcept;
 \end{itemdecl}
 
@@ -467,7 +457,7 @@ template<size_t Bits, typename S>
 \end{itemdescr}
 
 \begin{itemdecl}
-template<size_t Bits, typename S> 
+template<size_t Bits, typename S>
   constexpr wide_integer<Bits, S> operator+(const wide_integer<Bits, S>& val) noexcept(is_unsigned_v<S>);
 \end{itemdecl}
 
@@ -583,46 +573,6 @@ common_type_t<wide_integer<Bits, S>, size_t>
 
 \begin{itemdecl}
 template<size_t Bits, typename S, size_t Bits2, typename S2>
-  constexpr bool operator<(const wide_integer<Bits, S>& lhs,
-                           const wide_integer<Bits2, S2>& rhs) noexcept;
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{true} if value of \tcode{CT(lhs)} is less than the value of \tcode{CT(rhs)}.
-\end{itemdescr}
-
-\begin{itemdecl}
-template<size_t Bits, typename S, size_t Bits2, typename S2>
-  constexpr bool operator>(const wide_integer<Bits, S>& lhs,
-                           const wide_integer<Bits2, S2>& rhs) noexcept;
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{true} if value of \tcode{CT(lhs)} is greater than the value of \tcode{CT(rhs)}.
-\end{itemdescr}
-
-\begin{itemdecl}
-template<size_t Bits, typename S, size_t Bits2, typename S2>
-  constexpr bool operator<=(const wide_integer<Bits, S>& lhs,
-                            const wide_integer<Bits2, S2>& rhs) noexcept;
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{true} if value of \tcode{CT(lhs)} is equal or less than the value of \tcode{CT(rhs)}.
-\end{itemdescr}
-
-\begin{itemdecl}
-template<size_t Bits, typename S, size_t Bits2, typename S2>
-  constexpr bool operator>=(const wide_integer<Bits, S>& lhs,
-                            const wide_integer<Bits2, S2>& rhs) noexcept;
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{true} if value of \tcode{CT(lhs)} is equal or greater than the value of \tcode{CT(rhs)}.
-\end{itemdescr}
-
-\begin{itemdecl}
-template<size_t Bits, typename S, size_t Bits2, typename S2>
   constexpr bool operator==(const wide_integer<Bits, S>& lhs,
                             const wide_integer<Bits2, S2>& rhs) noexcept;
 \end{itemdecl}
@@ -631,14 +581,15 @@ template<size_t Bits, typename S, size_t Bits2, typename S2>
 \returns \tcode{true} if significant bits of \tcode{CT(lhs)} and \tcode{CT(rhs)} are the same.
 \end{itemdescr}
 
+
 \begin{itemdecl}
 template<size_t Bits, typename S, size_t Bits2, typename S2>
-  constexpr bool operator!=(const wide_integer<Bits, S>& lhs,
-                            const wide_integer<Bits2, S2>& rhs) noexcept;
+  constexpr strong_ordering operator<=>(const wide_integer<Bits, S>& lhs,
+                                        const wide_integer<Bits2, S2>& rhs) noexcept;
 \end{itemdecl}
 
 \begin{itemdescr}
-\returns \tcode{!(CT(lhs) == CT(rhs))}.
+\returns \tcode{strong_ordering::equal} if \tcode{CT(lhs) - CT(rhs) == 0}; otherwise returns \tcode{strong_ordering::less} if \tcode{CT(lhs) - CT(rhs) < 0}; otherwise \tcode{strong_ordering::greater}.
 \end{itemdescr}
 
 \rSec1[numeric.wide_integer.conversions]{Numeric conversions}
@@ -693,7 +644,7 @@ template<class Char, class Traits, size_t Bits, typename S>
 \begin{itemdescr}
 \pnum
 \effects Extracts a \tcode{wide_integer} that is represented as a decimal number in the \tcode{is}. If bad input is encountered, calls \tcode{is.setstate(ios_base::failbit)} (which may throw \tcode{ios::failure} ([iostate.flags])).
-    
+
 \pnum
 \returns \tcode{is}.
 \end{itemdescr}
