@@ -6,12 +6,16 @@
 \rSec1[rational.class]{Class \tcode{rational}}
 
 \begin{codeblock}
+#include <compare>
+
 class rational {
 public:
-    rational() noexcept;
-
-    rational(const rational& rat);
-    rational(rational&& rat) noexcept;
+    constexpr rational() noexcept = default;
+    rational(const rational& rat) = default;
+    rational(rational&& rat) noexcept = default;
+    rational& operator=(const rational& rat) = default;
+    rational& operator=(rational&& rat) noexcept = default;
+    ~rational() = default;
 
     explicit rational(float num);
     explicit rational(double num);
@@ -20,11 +24,6 @@ public:
     explicit rational(integer num);
 
     rational(integer num, integer den);
-
-    ~rational() noexcept;
-
-    rational& operator=(const rational& rat);
-    rational& operator=(rational&& rat) noexcept;
 
     rational& operator=(integer num);
     rational& assign(integer num, integer den);
@@ -56,29 +55,14 @@ public:
     rational& operator-=(const rational& rhs);
     rational& operator*=(const rational& rhs);
     rational& operator/=(const rational& rhs);
+
+private:
+    integer numerator_;   // \expos
+    integer denominator_; // \expos
 };
 \end{codeblock}
 
-The numerator and denominator shall be stored internally in a \tcode{std::experimental::seminumeric::integer}.
-
 \tcode{rational} member functions:
-
-\begin{itemdecl}
-rational() noexcept;
-\end{itemdecl}
-
-\begin{itemdescr}
-\effects Constructs a \tcode{rational} with a numerator equal to zero and a denominator equal to one.
-\end{itemdescr}
-
-\begin{itemdecl}
-rational(const rational& rat);
-rational(rational&& rat);
-\end{itemdecl}
-
-\begin{itemdescr}
-\effects Constructs a \tcode{rational} with a value of \tcode{rat}.
-\end{itemdescr}
 
 \begin{itemdecl}
 explicit rational(integer num);
@@ -105,25 +89,6 @@ rational(integer num, integer den);
 \begin{itemdescr}
 \requires \tcode{den != 0}
 \effects Constructs a \tcode{rational} given the specified numerator and denominator.
-\end{itemdescr}
-
-\begin{itemdecl}
-~rational() noexcept;
-\end{itemdecl}
-
-\begin{itemdescr}
-\effects Destructs \tcode{*this}.
-\end{itemdescr}
-
-\begin{itemdecl}
-rational& operator=(const rational& rhs);
-rational& operator=(rational&& rhs) noexcept;
-\end{itemdecl}
-
-\begin{itemdescr}
-\effects Assigns \tcode{rhs} to \tcode{*this}.
-
-\returns \tcode{*this}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -328,8 +293,8 @@ rational& operator/=(const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-\requires \tcode{rhs != 0}.    
-    
+\requires \tcode{rhs != 0}.
+
 \effects Divides \tcode{*this} by the rational value \tcode{rhs} and stores the result in \tcode{*this}.
 
 \returns \tcode{*this}.
@@ -464,44 +429,13 @@ bool operator==(const rational& lhs, const rational& rhs);
 \end{itemdescr}
 
 \begin{itemdecl}
-bool operator!=(const rational& lhs, const rational& rhs);
+strong_ordering operator<=>(const rational& lhs, const rational& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-\returns \tcode{!(lhs == rhs)}.
+\returns As if \tcode{lhs.numer() * rhs.denom() <=> rhs.numer() * lhs.denom()}.
 \end{itemdescr}
 
-\begin{itemdecl}
-bool operator<(const rational& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns As if \tcode{lhs.numer() * rhs.denom() < rhs.numer() * lhs.denom()}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator>(const rational& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{rhs < lhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator<=(const rational& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{lhs < rhs || lhs == rhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator>=(const rational& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{lhs > rhs || lhs == rhs}.
-\end{itemdescr}
 
 \begin{itemdecl}
 bool operator==(const rational& lhs, const integer& rhs);
@@ -512,43 +446,11 @@ bool operator==(const rational& lhs, const integer& rhs);
 \end{itemdescr}
 
 \begin{itemdecl}
-bool operator!=(const rational& lhs, const integer& rhs);
+strong_ordering operator<=>(const rational& lhs, const integer& rhs);
 \end{itemdecl}
 
 \begin{itemdescr}
-\returns \tcode{!(lhs == rhs)}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator<(const rational& lhs, const integer& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns As if \tcode{lhs.numer() < rhs * lhs.denom()}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator>(const rational& lhs, const integer& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns As if \tcode{lhs.numer() > rhs * lhs.denom()}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator<=(const rational& lhs, const integer& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{lhs < rhs || lhs == rhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator>=(const rational& lhs, const integer& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{lhs > rhs || lhs == rhs}.
+\returns As if \tcode{lhs.numer() <=> rhs * lhs.denom()}.
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -557,46 +459,6 @@ bool operator==(const integer& lhs, const rational& rhs);
 
 \begin{itemdescr}
 \returns \tcode{rhs == lhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator!=(const integer& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{rhs != lhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator<(const integer& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{rhs > lhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator>(const integer& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{rhs < lhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator<=(const integer& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{rhs >= lhs}.
-\end{itemdescr}
-
-\begin{itemdecl}
-bool operator>=(const integer& lhs, const rational& rhs);
-\end{itemdecl}
-
-\begin{itemdescr}
-\returns \tcode{rhs <= lhs}.
 \end{itemdescr}
 
 \end{addedblock}
