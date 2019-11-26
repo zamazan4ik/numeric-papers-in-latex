@@ -378,51 +378,51 @@ DU unsigned integer type that is double the width of the U type
 
 \end{libreqtab3}
 
-We need a mechanism to specify the largest supported type for various combinations of function category and operation category. To that end, we propose macros as follows.
+We need a mechanism to specify the largest supported type for various combinations of function category and operation category. To that end, we propose aliases as follows.
 
 \begin{libreqtab3}
-    {Macros}
-    {tab:macros}
+    {Alias}
+    {tab:largest_aliases}
     \\ \topline
-    \lhdr{macro name}  &
+    \lhdr{alias name}  &
     \chdr{result category}  &
     \rhdr{operation category} \\ \capsep
     \endfirsthead
     \continuedcaption\\
     \hline
-    \lhdr{macro name}  &
+    \lhdr{alias name}  &
     \chdr{result category}  &
     \rhdr{operation category} \\ \capsep
     \endhead
 
-LARGEST_DOUBLE_WIDE_ADD & double-wide & add, add2, sub, sub2
+largest_double_wide_add & double-wide & add, add2, sub, sub2
 \\ \rowsep
 
-LARGEST_DOUBLE_WIDE_LSH & double-wide & lsh, lshadd
+largest_double_wide_lsh & double-wide & lsh, lshadd
 \\ \rowsep
 
-LARGEST_DOUBLE_WIDE_MUL & double-wide & mul, muladd, muladd2, mulsub, mulsub2
+largest_double_wide_mul & double-wide & mul, muladd, muladd2, mulsub, mulsub2
 \\ \rowsep
 
-LARGEST_DOUBLE_WIDE_DIV & double-wide & divn, divw, divnrem, divwrem
+largest_double_wide_div & double-wide & divn, divw, divnrem, divwrem
 \\ \rowsep
 
-LARGEST_DOUBLE_WIDE_ALL & double-wide & the minimum size of the four macros above
+largest_double_wide_all & double-wide & the minimum size of the four macros above
 \\ \rowsep
 
-LARGEST_SINGLE_WIDE_ADD & single-wide & add, add2, sub, sub2
+largest_single_wide_add & single-wide & add, add2, sub, sub2
 \\ \rowsep
 
-LARGEST_SINGLE_WIDE_LSH & single-wide & lsh, lshadd
+largest_single_wide_lsh & single-wide & lsh, lshadd
 \\ \rowsep
 
-LARGEST_SINGLE_WIDE_MUL & single-wide & mul, muladd, muladd2, mulsub, mulsub2
+largest_single_wide_mul & single-wide & mul, muladd, muladd2, mulsub, mulsub2
 \\ \rowsep
 
-LARGEST_SINGLE_WIDE_DIV & single-wide & divn, divw, divnrem, divwrem
+largest_single_wide_div & single-wide & divn, divw, divnrem, divwrem
 \\ \rowsep
 
-LARGEST_SINGLE_WIDE_ALL & double-wide & the minimum size of the four macros above
+largest_single_wide_all & double-wide & the minimum size of the four macros above
 \\ \rowsep
 
 \end{libreqtab3}
@@ -521,7 +521,7 @@ The machine extension layer enables the implementation of extended types.
 
 \rSec1[word_array_ops]{Word-array operations}
 
-A word is the type provided by \tcode{LARGEST_SINGLE_WIDE_ALL} and defined above.
+A word is the type provided by \tcode{largest_single_wide_all} and defined above.
 
 We provide the following operations. These operations are not intended to provide complete multi-word operations, but rather to handle subarrays with uniform operations. Higher-level operations then compose these operations into a complete operation.
 
