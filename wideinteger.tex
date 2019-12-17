@@ -240,16 +240,16 @@ namespace std {
     template <typename Arithmetic> constexpr operator Arithmetic() const noexcept;
       constexpr explicit operator bool() const noexcept;
   private:
-    byte data[Bits / CHAR_BITS]; // exposition only
+    byte data[Bits / CHAR_BIT]; // exposition only
   };
 } // namespace std
 \end{codeblock}
 
 The class template wide_integer<size_t Bits, typename S> is a trivial standard layout class that behaves as an integer type of a compile time specified bitness.
 
-Template parameter Bits specifies exact bits count to store the integer value. Bits % (sizeof(int) * CHAR_BITS) is eqaul to 0. sizeof(wide_integer<Bits, unsigned>) and sizeof(wide_integer<Bits, signed>) are required to be equal to Bits * CHAR_BITS.
+Template parameter Bits specifies exact bits count to store the integer value. \tcode{Bits \% (sizeof(int) * CHAR_BIT)} is equal to \tcode{0}. \tcode{sizeof(wide_integer<Bits, unsigned>)} and \tcode{sizeof(wide_integer<Bits, signed>)} are required to be equal to \tcode{Bits * CHAR_BIT}.
 
-When size of wide_integer is equal to a size of builtin integral type then the alignment and layout of that wide_integer is equal to the alignment and layout of the builtin type.
+When size of wide_integer is equal to a size of builtin integral type then the alignment and layout of that \tcode{wide_integer} is equal to the alignment and layout of the builtin type.
 
 Template parameter S specifies signedness of the stored integer value and is either signed or unsigned.
 
