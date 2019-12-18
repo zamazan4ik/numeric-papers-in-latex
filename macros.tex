@@ -560,3 +560,15 @@
 % usage: \definition{name}{xref}
 \newcommand{\definition}[2]{\definitionx{\section}{#1}{#2}}%
 \newenvironment{defnote}{\noteintro{Note 1 to entry}}{\noteoutro{note}\space}
+
+%%--------------------------------------------------
+%% Hyperlink macros
+\definecolor{reviewnotecolor}{rgb}{0.69, 0.4, 0.0}
+
+\newenvironment{reviewnote}
+{
+\color{reviewnotecolor}
+}
+{
+\color{black}
+}
