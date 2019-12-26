@@ -6,7 +6,9 @@ The machine abstraction layer enables a mostly machine-independent implementatio
 
 \rSec1[overflow_detecting_ops]{Overflow-Detecting Operations}
 \begin{reviewnote}
-The initial wording and motivation are available at \hyperlink{http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0103r0.html}{P0103R0 "Overflow-Detecting and Double-Wide Arithmetic Operations"}.
+The initial wording and motivation are available at \href{http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0103r0.html}{P0103R0 "Overflow-Detecting and Double-Wide Arithmetic Operations"}.
+
+Was merged into this document because of the \href{https://wg21.link/P0101R0}{P0101R0} discussion \href{http://wiki.edg.com/bin/view/Wg21kona2015/DiscussionNotes#P0101R0}{at Kona 2015}.
 \end{reviewnote}
 
 The overflow-detecting functions return a boolean true when the operation overflows, and a boolean false when the operation does not overflow. Compilers may assume that a true result is rare. When the return is false, the function writes the operation result through the given pointer. When the return is true, the pointer is not used and no write occurs.
@@ -216,7 +218,7 @@ constexpr T scale_up(T value, int count);
 
 \rSec1[round_ops]{Rounding Operations}
 \begin{reviewnote}
-The initial wording and motivation are available at \hyperlink{http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0105r0.html}{P0105R0 "Rounding and Overflow in C++"}.
+The initial wording and motivation are available at \href{http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0105r0.html}{P0105R0 "Rounding and Overflow in C++"}.
 \end{reviewnote}
 
 We represent the rounding mode in C++ as an enumeration:
@@ -353,7 +355,7 @@ constexpr T scale(T value, int count);
 
 \rSec1[double_word_ops]{Double-Word Operations}
 \begin{reviewnote}
-The initial wording and motivation are available at \hyperlink{http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0103r0.html}{P0103R0 "Overflow-Detecting and Double-Wide Arithmetic Operations"}.
+The initial wording and motivation are available at \href{http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0103r0.html}{P0103R0 "Overflow-Detecting and Double-Wide Arithmetic Operations"}.
 \end{reviewnote}
 
 There are two classes of functions, those that provide a result in a single double-wide type and those that provide a result split into two single-wide types.

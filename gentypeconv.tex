@@ -3,6 +3,10 @@
 \begin{addedblock}
 \rSec0[generalized_type_conversion]{Generalized Type Conversion}
 
+\begin{reviewnote}
+Was merged into this document because of the SG6 discussion of the \href{http://wiki.edg.com/pub/Wg21cologne2019/SG6/specification.html}{unpublished document}.
+\end{reviewnote}
+
 Conversion between arbitrary numeric types requires something more practical than implementing the full cross product of conversion possibilities.
 
 To that end, we propose that each numeric type promotes to an unbound type in it same general category. For example, integers of fixed size would promote to an unbound integer. In this promotion, there can be no possibility of overflow or rounding. Each type also demotes from that type. The demotion may have both round and overflow.
